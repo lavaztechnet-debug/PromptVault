@@ -18,6 +18,6 @@ class MainActivity : AppCompatActivity() {
         }
         webView.webViewClient = WebViewClient()
         webView.webChromeClient = WebChromeClient()
-        webView.loadUrl("file:///android_asset/mega_prompts.html")
+        webView.loadUrl("file:///android_asset/index.html")
     }
 }
