@@ -2,47 +2,47 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Lava's Expanded Prompt Vault</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
   <style>
-    :root { --bg:#2f2f2f; --bg-2:#262626; --text:#d9d9d9; --muted:#9a9a9a; --glow-cyan:#59f0ff; --accent:var(--glow-cyan); }
+    :root { --bg:#2f2f2f; --bg-2:#262626; --text:#d9d9d9; --muted:#9a9a9a; --glow-cyan:#59f0ff; }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { margin:0; min-height:100vh; font-family:'Outfit',sans-serif; background:linear-gradient(180deg,#2f2f2f 0%, #252525 60%, #1f1f1f 100%); color:var(--text); }
-    .neo-flat, .neo-btn, .neo-inset, .prompt-card { background:linear-gradient(145deg,#414141,#2e2e2e); border:1px solid rgba(0,0,0,.7); box-shadow:0 4px 8px rgba(0,0,0,.55); border-radius:18px; }
-    .neo-btn { transition:transform .1s ease; color:var(--text); text-shadow:0 1px 0 rgba(0,0,0,.7); cursor: pointer; }
-    .neo-btn:active { transform: scale(0.98); box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); }
-    .neo-btn.active { background:linear-gradient(145deg,#4b4b4b,#2a2a2a); color:#fff; border-color:rgba(255,255,255,.12); }
-    .text-gradient { background:linear-gradient(180deg,#ececec,#7a7a7a 55%,#d6d6d6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    #toast { visibility: hidden; min-width: 250px; background-color: #333; color: #59f0ff; text-align: center; border-radius: 25px; padding: 12px 24px; position: fixed; z-index: 100; left: 50%; bottom: 50px; transform: translateX(-50%); box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-    #toast.show { visibility: visible; }
+    body { margin:0; min-height:100vh; font-family:'Outfit',sans-serif; background:linear-gradient(180deg,#2f2f2f 0%, #252525 60%, #1f1f1f 100%); color:var(--text); padding-bottom: 2rem; }
+    .neo-flat { background:linear-gradient(145deg,#414141,#2e2e2e); border:1px solid rgba(0,0,0,.7); box-shadow:0 4px 8px rgba(0,0,0,.55); border-radius:18px; padding: 20px; }
+    .neo-btn { background:linear-gradient(145deg,#414141,#2e2e2e); border:1px solid rgba(0,0,0,.7); box-shadow:0 4px 8px rgba(0,0,0,.55); border-radius:14px; padding: 10px 16px; color:white; font-weight:bold; cursor:pointer; font-size: 0.85rem; }
+    .neo-btn:active { transform: scale(0.97); }
+    .neo-inset { background:#232323; border:1px solid #111; box-shadow:inset 0 2px 4px rgba(0,0,0,0.5); border-radius:12px; padding: 12px; width: 100%; color: white; }
+    .prompt-card { background:#333; border-radius:16px; padding: 16px; display:flex; flex-direction:column; border: 1px solid #444; }
+    #toast { visibility:hidden; position:fixed; bottom:50px; left:50%; transform:translateX(-50%); background:#333; color:#59f0ff; padding:12px 24px; border-radius:25px; z-index:1000; font-weight: bold; border: 1px solid #59f0ff; }
+    #toast.show { visibility:visible; }
   </style>
 </head>
-<body class="min-h-screen py-6 px-4">
+<body>
   <div id="toast">Copied to Clipboard!</div>
-  <div class="max-w-7xl mx-auto">
-    <header class="text-center mb-10">
-      <h1 class="text-4xl md:text-7xl font-black mb-4"><span class="text-gradient">Lava's Prompt Vault</span></h1>
-      <div class="flex flex-wrap gap-4 justify-center">
-        <button onclick="copyAll()" class="neo-btn px-6 py-3 rounded-2xl font-bold">📋 Copy All</button>
-        <button onclick="exportGoogleDocs()" class="neo-btn px-6 py-3 rounded-2xl font-bold">💙 Export to Docs</button>
-        <button onclick="exportSamsungNotes()" class="neo-btn px-6 py-3 rounded-2xl font-bold">🧡 Samsung Notes</button>
-        <button onclick="printVault()" class="neo-btn px-6 py-3 rounded-2xl font-bold">🖨️ Print</button>
+  <div class="max-w-2xl mx-auto px-4">
+    <header class="text-center my-6">
+      <h1 class="text-3xl font-black mb-4 text-white tracking-tight">Lava's Prompt Vault</h1>
+      <div class="flex flex-wrap gap-2 justify-center">
+        <button onclick="copyAll()" class="neo-btn">📋 Copy All</button>
+        <button onclick="exportGoogleDocs()" class="neo-btn">💙 Docs</button>
+        <button onclick="exportSamsungNotes()" class="neo-btn">🧡 Notes</button>
+        <button onclick="window.print()" class="neo-btn">🖨️ Print</button>
       </div>
     </header>
 
-    <div id="aiSandbox" class="neo-flat p-6 mb-10 border border-cyan-500/30">
-      <h2 class="text-2xl font-bold mb-4 text-white">🚀 AI Sandbox</h2>
-      <textarea id="aiSandboxBox" rows="4" placeholder="Tap '🚀 Sandbox' on any prompt..." class="neo-inset w-full p-4 rounded-xl text-white mb-4 outline-none"></textarea>
-      <div class="flex gap-3">
-        <button onclick="launchGeminiApp()" class="neo-btn px-6 py-3 font-bold bg-cyan-950">🌌 Launch in Gemini</button>
-        <button onclick="document.getElementById('aiSandboxBox').value = ''" class="neo-btn px-6 py-3 font-bold">Clear</button>
+    <div class="neo-flat mb-6">
+      <h2 class="text-xl font-bold mb-3 text-white">🚀 AI Sandbox</h2>
+      <textarea id="aiSandboxBox" rows="4" class="neo-inset mb-3"></textarea>
+      <div class="flex gap-2">
+        <button onclick="launchGeminiApp()" class="neo-btn bg-cyan-900 flex-1">🌌 Launch Gemini</button>
+        <button onclick="document.getElementById('aiSandboxBox').value=''" class="neo-btn flex-1">Clear</button>
       </div>
     </div>
 
-    <input type="text" id="searchInput" placeholder="🔍 Search prompts..." class="neo-inset w-full px-5 py-4 mb-8 rounded-xl outline-none">
-    <div id="promptGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    <input type="text" id="searchInput" placeholder="🔍 Search prompts..." class="neo-inset mb-6">
+    <div id="promptGrid" class="grid grid-cols-1 gap-4"></div>
   </div>
 
   <script>
@@ -228,7 +228,7 @@
       { id: 179, category: 'image-enhancing', title: 'Isometric 3D App Screen', prompt: 'Render isometric 3D screen.', icon: '📐' },
       { id: 180, category: 'prompt', title: 'Design System Architect', prompt: 'Act as Design System Architect.', icon: '🎨' },
       { id: 181, category: 'prompt', title: 'Wireframe to Compose', prompt: 'Convert wireframe to Compose.', icon: '🖼️' },
-      { id: 182, document, title: 'Visual Style Guide', prompt: 'Draft visual style guide.', icon: '📗' },
+      { id: 182, category: 'document', title: 'Visual Style Guide', prompt: 'Draft visual style guide.', icon: '📗' },
       { id: 183, category: 'tool', title: 'Design Token Generator', prompt: 'Generate design tokens.', icon: '🧮' },
       { id: 184, category: 'tool', title: 'Color Palette Accessibility', prompt: 'Analyze color palette accessibility.', icon: '👁️' },
       { id: 185, category: 'tool', title: 'Typography Scale Builder', prompt: 'Create typography scale.', icon: '🔠' },
@@ -254,13 +254,13 @@
       grid.innerHTML = '';
       prompts.forEach(p => {
         const card = document.createElement('div');
-        card.className = 'prompt-card p-6 flex flex-col h-full';
+        card.className = 'prompt-card';
         card.innerHTML = `
           <h3 class="text-xl font-bold text-white mb-2">${p.icon} ${p.title}</h3>
           <p class="text-sm text-gray-400 mb-6 flex-grow">${p.prompt}</p>
           <div class="flex gap-2">
-            <button onclick="navigator.clipboard.writeText('${p.prompt.replace(/'/g, "\\'")}')" class="neo-btn flex-1 py-2 font-bold text-xs">Copy</button>
-            <button onclick="document.getElementById('aiSandboxBox').value='${p.prompt.replace(/'/g, "\\'")}'" class="neo-btn flex-1 py-2 font-bold text-xs text-cyan-400">Sandbox</button>
+            <button onclick="navigator.clipboard.writeText('${p.prompt.replace(/'/g, "\\'")}')" class="neo-btn flex-1 text-xs">Copy</button>
+            <button onclick="document.getElementById('aiSandboxBox').value='${p.prompt.replace(/'/g, "\\'")}'" class="neo-btn flex-1 text-xs text-cyan-400">Sandbox</button>
           </div>`;
         grid.appendChild(card);
       });
@@ -278,8 +278,6 @@
       t.classList.add('show'); 
       setTimeout(()=>t.classList.remove('show'), 2000); 
     }
-    
-    function printVault() { window.print(); }
     
     renderPrompts();
   </script>
