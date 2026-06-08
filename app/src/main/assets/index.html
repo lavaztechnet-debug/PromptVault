@@ -14,9 +14,12 @@
       --text:#e8e8e8; 
       --muted:#a0a0a0; 
       --glow-cyan:#59f0ff;
-      --shadow-dark: 0 8px 16px rgba(0,0,0,0.8), 0 4px 8px rgba(0,0,0,0.6);
-      --shadow-light: 0 2px 4px rgba(255,255,255,0.1);
-      --shadow-inset: inset 0 2px 6px rgba(0,0,0,0.7), inset 0 -2px 6px rgba(255,255,255,0.08);
+      --color-app:#6366f1;
+      --color-android:#34d399;
+      --color-prompt:#f59e0b;
+      --color-document:#8b5cf6;
+      --color-tool:#ec4899;
+      --color-image:#06b6d4;
     }
     
     * { 
@@ -34,6 +37,43 @@
       color: var(--text); 
       padding: 0;
       overflow-x: hidden;
+    }
+
+    /* Tab Navigation */
+    .tab-nav {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      padding: 12px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: linear-gradient(145deg, #3a3a3a, #242424);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.6);
+      border-radius: 12px;
+      padding: 10px 16px;
+      color: var(--text);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.85rem;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(145deg, var(--glow-cyan), #0a9db5);
+      border-color: var(--glow-cyan);
+      color: #1a1a1a;
+      box-shadow: 0 8px 16px rgba(89, 240, 255, 0.3);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
     }
 
     /* Enhanced Neumorphic Styles with 3D Depth */
@@ -108,23 +148,6 @@
         inset 0 2px 4px rgba(0,0,0,0.7);
     }
 
-    .neo-btn.primary {
-      background: linear-gradient(145deg, #1a5f7a, #0d3a4d);
-      border: 1px solid rgba(89, 240, 255, 0.3);
-      box-shadow: 
-        0 12px 24px rgba(0,0,0,0.8),
-        0 6px 12px rgba(0,0,0,0.6),
-        inset 0 1px 0 rgba(89, 240, 255, 0.2),
-        inset 0 -1px 0 rgba(0,0,0,0.7);
-    }
-
-    .neo-btn.primary:hover {
-      box-shadow: 
-        0 16px 32px rgba(89, 240, 255, 0.3),
-        0 8px 16px rgba(0,0,0,0.7),
-        inset 0 1px 0 rgba(89, 240, 255, 0.3);
-    }
-
     .neo-inset {
       background: linear-gradient(145deg, #1a1a1a, #141414);
       border: 1px solid rgba(0,0,0,0.6);
@@ -150,9 +173,10 @@
         0 0 16px rgba(89, 240, 255, 0.2);
     }
 
+    /* Category Colors */
     .prompt-card {
       background: linear-gradient(135deg, #2d2d2d, #222222);
-      border: 1px solid rgba(255,255,255,0.12);
+      border-left: 4px solid var(--card-color, #6366f1);
       box-shadow: 
         0 16px 32px rgba(0,0,0,0.85),
         0 8px 16px rgba(0,0,0,0.6),
@@ -166,6 +190,13 @@
       transition: all 0.3s ease;
       transform: translateZ(0);
     }
+
+    .prompt-card.cat-app { --card-color: var(--color-app); }
+    .prompt-card.cat-android { --card-color: var(--color-android); }
+    .prompt-card.cat-prompt { --card-color: var(--color-prompt); }
+    .prompt-card.cat-document { --card-color: var(--color-document); }
+    .prompt-card.cat-tool { --card-color: var(--color-tool); }
+    .prompt-card.cat-image-enhancing { --card-color: var(--color-image); }
 
     .prompt-card::before {
       content: '';
@@ -188,6 +219,19 @@
       display: flex;
       align-items: center;
       gap: 10px;
+    }
+
+    .prompt-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+      background: var(--card-color, #6366f1);
+      border-radius: 8px;
+      color: white;
+      font-weight: 700;
+      font-size: 0.9rem;
     }
 
     .prompt-icon {
@@ -281,6 +325,37 @@
       padding: 12px 14px;
     }
 
+    .category-filter {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 12px 0;
+    }
+
+    .cat-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 2px solid;
+      transition: all 0.3s ease;
+      background: rgba(0,0,0,0.3);
+    }
+
+    .cat-badge.app { border-color: var(--color-app); color: var(--color-app); }
+    .cat-badge.android { border-color: var(--color-android); color: var(--color-android); }
+    .cat-badge.prompt { border-color: var(--color-prompt); color: var(--color-prompt); }
+    .cat-badge.document { border-color: var(--color-document); color: var(--color-document); }
+    .cat-badge.tool { border-color: var(--color-tool); color: var(--color-tool); }
+    .cat-badge.image-enhancing { border-color: var(--color-image); color: var(--color-image); }
+
+    .cat-badge.active {
+      background: currentColor;
+      color: white;
+    }
+
     /* Portrait Mode (Mobile Default) */
     @media (max-width: 768px) and (orientation: portrait) {
       body {
@@ -367,6 +442,16 @@
         padding: 10px 12px;
         min-width: auto;
       }
+
+      .tab-nav {
+        gap: 8px;
+        padding: 8px;
+      }
+
+      .tab-btn {
+        padding: 8px 12px;
+        font-size: 0.75rem;
+      }
     }
 
     /* Landscape Mode */
@@ -401,27 +486,6 @@
         min-width: 70px;
       }
 
-      .neo-container {
-        padding: 12px;
-        margin-bottom: 12px;
-      }
-
-      .neo-container h2 {
-        font-size: 1.1rem;
-        margin-bottom: 8px;
-      }
-
-      textarea.neo-inset {
-        min-height: 70px;
-        max-height: 120px;
-        font-size: 0.85rem;
-      }
-
-      #searchInput {
-        margin-bottom: 12px;
-        font-size: 0.9rem;
-      }
-
       #promptGrid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -444,11 +508,6 @@
       .prompt-card p {
         font-size: 0.75rem;
         -webkit-line-clamp: 2;
-      }
-
-      .button-group {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
       }
     }
 
@@ -480,7 +539,6 @@
       overflow-y: scroll;
     }
 
-    /* Smooth scrolling */
     * {
       scroll-behavior: smooth;
     }
@@ -492,185 +550,165 @@
   <div class="max-w-2xl mx-auto">
     <header class="text-center">
       <h1>🔮 Lava's Prompt Vault</h1>
-      <div class="button-group">
+      <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('vault')">📚 Vault</button>
+        <button class="tab-btn" onclick="switchTab('create')">✏️ Create</button>
+      </div>
+    </header>
+
+    <!-- Vault Tab -->
+    <div id="vault" class="tab-content active">
+      <div class="button-group" style="margin-bottom: 16px;">
         <button onclick="copyAll()" class="neo-btn">📋 Copy All</button>
         <button onclick="exportGoogleDocs()" class="neo-btn">💙 Docs</button>
         <button onclick="exportSamsungNotes()" class="neo-btn">🧡 Notes</button>
         <button onclick="window.print()" class="neo-btn">🖨️ Print</button>
       </div>
-    </header>
 
-    <div class="neo-container">
-      <h2>🚀 AI Sandbox</h2>
-      <textarea id="aiSandboxBox" class="neo-inset" placeholder="Paste or create your prompts here..."></textarea>
-      <div class="button-group">
-        <button onclick="launchGeminiApp()" class="neo-btn primary flex-1">🌌 Launch Gemini</button>
-        <button onclick="document.getElementById('aiSandboxBox').value=''" class="neo-btn flex-1">Clear</button>
+      <input type="text" id="searchInput" class="neo-inset" placeholder="🔍 Search prompts...">
+      
+      <div class="category-filter">
+        <span class="cat-badge app active" onclick="filterByCategory('app')">App</span>
+        <span class="cat-badge android" onclick="filterByCategory('android')">Android</span>
+        <span class="cat-badge prompt" onclick="filterByCategory('prompt')">Prompt</span>
+        <span class="cat-badge document" onclick="filterByCategory('document')">Document</span>
+        <span class="cat-badge tool" onclick="filterByCategory('tool')">Tool</span>
+        <span class="cat-badge image-enhancing" onclick="filterByCategory('image-enhancing')">Visual</span>
+        <span class="cat-badge" onclick="filterByCategory('all')" style="color: #a0a0a0; border-color: #a0a0a0;">All</span>
       </div>
+      
+      <div id="promptGrid" class="grid grid-cols-1 gap-4"></div>
     </div>
 
-    <input type="text" id="searchInput" class="neo-inset" placeholder="🔍 Search prompts...">
-    
-    <div id="promptGrid" class="grid grid-cols-1 gap-4"></div>
+    <!-- Create Tab -->
+    <div id="create" class="tab-content">
+      <div class="neo-container">
+        <h2>✨ Create Your Own Prompt</h2>
+        
+        <label style="display: block; margin-top: 16px; margin-bottom: 8px; font-weight: 600; color: var(--text);">Title</label>
+        <input type="text" id="customTitle" class="neo-inset" placeholder="Enter prompt title..." style="margin-bottom: 12px;">
+
+        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text);">Prompt</label>
+        <textarea id="customPrompt" class="neo-inset" placeholder="Enter your custom prompt here..." style="min-height: 120px; margin-bottom: 12px; resize: vertical;"></textarea>
+
+        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text);">Category</label>
+        <select id="customCategory" class="neo-inset" style="margin-bottom: 12px;">
+          <option value="app">📱 App</option>
+          <option value="android">🤖 Android</option>
+          <option value="prompt">✍️ Prompt</option>
+          <option value="document">📄 Document</option>
+          <option value="tool">🛠️ Tool</option>
+          <option value="image-enhancing">🎨 Visual</option>
+        </select>
+
+        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text);">Icon Emoji</label>
+        <input type="text" id="customIcon" class="neo-inset" placeholder="Enter emoji icon..." value="✨" maxlength="2" style="margin-bottom: 16px;">
+
+        <div class="button-group">
+          <button onclick="addCustomPrompt()" class="neo-btn primary" style="flex: 1;">➕ Add to Vault</button>
+          <button onclick="clearCustomForm()" class="neo-btn" style="flex: 1;">🔄 Clear</button>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <h3 style="margin: 0 0 12px 0; font-size: 1.1rem;">📌 Your Custom Prompts</h3>
+          <div id="customPromptsList" style="display: flex; flex-direction: column; gap: 12px;"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
-    const prompts = [
+    // Category color mapping
+    const categoryIcons = {
+      'app': '📱',
+      'android': '🤖',
+      'prompt': '✍️',
+      'document': '📄',
+      'tool': '🛠️',
+      'image-enhancing': '🎨'
+    };
+
+    const basePrompts = [
       { id: 1, category: 'app', icon: '📝', title: 'Offline-First Note App', prompt: "Build a complete offline-first note app with robust search capabilities, tagging, seamless cloud synchronization, and flexible storage options. Include real-time sync, conflict resolution, and end-to-end encryption." },
       { id: 2, category: 'app', icon: '🎙️', title: 'Premium Podcast Player', prompt: "Create a premium podcast player featuring advanced playlist management, an intelligent sleep timer, precise chapter markers, variable playback speeds, and queue management. Include downloading for offline listening." },
       { id: 3, category: 'app', icon: '👻', title: 'Horror Story Reader', prompt: "Design an immersive horror story reader app with chilling audio narration, atmospheric visual effects (e.g., subtle parallax, dynamic shadows), and interactive story branching with multiple endings." },
       { id: 4, category: 'app', icon: '🔐', title: 'Secure Password Vault', prompt: "Build a highly secure password vault app incorporating biometric authentication (fingerprint/face ID), military-grade encryption, password generation, and secure sharing with expiration options." },
       { id: 5, category: 'app', icon: '🎯', title: 'Habit Tracker Pro', prompt: "Create a professional habit tracker with advanced streak tracking, customizable reminders, detailed analytics and progress visualization, habit linking, and motivation notifications." },
-      { id: 6, category: 'app', icon: '📺', title: 'Media Planner', prompt: "Build a comprehensive media planner app for content creators, including scriptwriting tools, storyboard creation, publishing calendars, asset management, and collaboration features." },
-      { id: 7, category: 'app', icon: '💰', title: 'Expense Tracker', prompt: "Create a fully operational expense tracker with OCR receipt scanning, intelligent categorization, detailed charts and financial reports, budget monitoring, and multi-currency support." },
-      { id: 8, category: 'app', icon: '📚', title: 'Book Catalog', prompt: "Build a smart book catalog app with ISBN barcode scanning, automatic metadata retrieval (author, genre, publication date), personalized recommendations, and reading progress tracking." },
-      { id: 9, category: 'app', icon: '👨‍🍳', title: 'Recipe Manager', prompt: "Create a versatile recipe manager with integrated shopping list generation, robust offline support, a nutritional calculator, photo OCR for recipes, and meal planning capabilities." },
-      { id: 10, category: 'app', icon: '💪', title: 'Fitness Log', prompt: "Build a comprehensive fitness log app with customizable workout templates, interactive progress graphs, personal record (PR) tracking, and AI-powered form correction using device camera." },
-      { id: 11, category: 'android', icon: '🏗️', title: 'Clean Architecture Refactor', prompt: "Refactor an existing Android application into a modern clean architecture using Jetpack Compose for UI, Hilt for dependency injection, and proper separation of concerns." },
-      { id: 12, category: 'android', icon: '🔄', title: 'Fragment to Compose Migration', prompt: "Transform a legacy fragment-based Android application into a modern, declarative Jetpack Compose application, ensuring all features are preserved and tests are updated." },
-      { id: 13, category: 'android', icon: '💾', title: 'Offline Caching & Retry Logic', prompt: "Implement comprehensive offline caching and resilient retry logic within the Android repository layer, ensuring data consistency and graceful degradation." },
-      { id: 14, category: 'android', icon: '🗄️', title: 'Room Schema Definition', prompt: "Write a complete Room database schema for an application's data model, including detailed Entity definitions, Data Access Objects (DAOs), and migration strategies." },
-      { id: 15, category: 'android', icon: '🧠', title: 'ViewModels for All Screens', prompt: "Generate robust ViewModels for all application screens, incorporating loading, empty, and error states, along with appropriate data handling and lifecycle management." },
-      { id: 16, category: 'android', icon: '🗺️', title: 'Navigation Flows', prompt: "Create comprehensive navigation flows for key user journeys such as onboarding, dashboard, detail views, and settings. Utilize Jetpack Navigation with type-safe arguments." },
-      { id: 17, category: 'android', icon: '🌙', title: 'Dark Mode & Accessibility', prompt: "Add full dark mode support, enhance accessibility features (e.g., content descriptions, touch target sizes), and implement proper contrast ratios for WCAG compliance." },
-      { id: 18, category: 'android', icon: '📤', title: 'File Import/Export & Share', prompt: "Implement secure and user-friendly file import/export functionalities and share intents using Scoped Storage and Storage Access Framework (SAF)." },
-      { id: 19, category: 'android', icon: '🔁', title: 'Background Sync with WorkManager', prompt: "Add reliable background data synchronization using WorkManager, implementing battery-friendly scheduling, network-aware retries, and proper error handling." },
-      { id: 20, category: 'android', icon: '🛡️', title: 'App Hardening & Security', prompt: "Harden an Android application against common vulnerabilities by implementing input sanitization, secure storage practices, certificate pinning, and obfuscation." },
+      { id: 6, category: 'image-enhancing', icon: '🎨', title: 'Neumorphic UI Design', prompt: "Design a neumorphic UI mockup with soft, extruded shapes, subtle shadows, and tactile elements. Focus on soft light sources, minimal color, and realistic material finishes that appear to be pushed or pulled from the surface." },
+      { id: 7, category: 'image-enhancing', icon: '🧊', title: 'Glassmorphism Effect', prompt: "Create a glassmorphism design with frosted glass effects, translucency, vibrant colors, and layered elements. Include proper backdrop blur, transparency variations, and realistic light refraction for a premium, modern aesthetic." },
+      { id: 8, category: 'image-enhancing', icon: '🌐', title: '3D Depth Rendering', prompt: "Render a 3D depth scene with proper perspective, realistic lighting, accurate shadows, and material properties. Include depth-of-field effects, proper ambient occlusion, and believable spatial relationships between objects." },
+      { id: 9, category: 'image-enhancing', icon: '💎', title: 'Premium 3D Material', prompt: "Create premium 3D materials with realistic reflections, refractions, roughness, and metallic properties. Focus on physically-based rendering, proper light interaction, and luxury material finishes (chrome, glass, carbon fiber, leather)." },
+      { id: 10, category: 'image-enhancing', icon: '✨', title: 'Luminous 3D Scene', prompt: "Design a luminous 3D scene with glowing elements, sophisticated lighting design, bloom effects, and atmospheric lighting. Include proper light falloff, color temperature variation, and realistic light bouncing." },
+      { id: 11, category: 'app', icon: '📺', title: 'Media Planner', prompt: "Build a comprehensive media planner app for content creators, including scriptwriting tools, storyboard creation, publishing calendars, asset management, and collaboration features." },
+      { id: 12, category: 'app', icon: '💰', title: 'Expense Tracker', prompt: "Create a fully operational expense tracker with OCR receipt scanning, intelligent categorization, detailed charts and financial reports, budget monitoring, and multi-currency support." },
+      { id: 13, category: 'app', icon: '📚', title: 'Book Catalog', prompt: "Build a smart book catalog app with ISBN barcode scanning, automatic metadata retrieval (author, genre, publication date), personalized recommendations, and reading progress tracking." },
+      { id: 14, category: 'image-enhancing', icon: '🎭', title: 'Surreal 3D Composition', prompt: "Create a surreal 3D composition with impossible geometry, dramatic lighting, and mind-bending spatial relationships. Use creative camera angles, exaggerated proportions, and cinematic composition for maximum impact." },
+      { id: 15, category: 'image-enhancing', icon: '🏛️', title: 'Architectural Visualization', prompt: "Render architectural visualization with accurate perspective, realistic materials, proper lighting, and immersive environments. Include detailed textures, appropriate shadows, and believable interior/exterior spaces." },
+      { id: 16, category: 'android', icon: '🏗️', title: 'Clean Architecture Refactor', prompt: "Refactor an existing Android application into a modern clean architecture using Jetpack Compose for UI, Hilt for dependency injection, and proper separation of concerns." },
+      { id: 17, category: 'android', icon: '🔄', title: 'Fragment to Compose Migration', prompt: "Transform a legacy fragment-based Android application into a modern, declarative Jetpack Compose application, ensuring all features are preserved and tests are updated." },
+      { id: 18, category: 'android', icon: '💾', title: 'Offline Caching & Retry Logic', prompt: "Implement comprehensive offline caching and resilient retry logic within the Android repository layer, ensuring data consistency and graceful degradation." },
+      { id: 19, category: 'android', icon: '🗄️', title: 'Room Schema Definition', prompt: "Write a complete Room database schema for an application's data model, including detailed Entity definitions, Data Access Objects (DAOs), and migration strategies." },
+      { id: 20, category: 'android', icon: '🧠', title: 'ViewModels for All Screens', prompt: "Generate robust ViewModels for all application screens, incorporating loading, empty, and error states, along with appropriate data handling and lifecycle management." },
       { id: 21, category: 'prompt', icon: '✍️', title: 'Production Gemini Prompt', prompt: "Rewrite this high-level idea into a production-grade Gemini prompt. The prompt should be highly specific, structured with clear sections, and include examples." },
       { id: 22, category: 'prompt', icon: '📋', title: 'One-line to Build Spec', prompt: "Expand this one-line application concept into a complete build specification document. Include detailed sections on features, architecture, tech stack, and deployment." },
       { id: 23, category: 'prompt', icon: '✂️', title: 'Features to Tasks', prompt: "Convert a given feature list into a detailed breakdown of implementation tasks, including estimated effort, dependencies, and acceptance criteria." },
       { id: 24, category: 'prompt', icon: '💻', title: 'Force Complete Code', prompt: "Generate a developer prompt that explicitly forces the AI to produce complete, runnable, and non-placeholder code for all requirements without shortcuts." },
-      { id: 25, category: 'prompt', icon: '👨‍💼', title: 'Senior Android Architect', prompt: "Create a prompt making Gemini act as a senior Android architect. The AI should provide expert advice on architecture decisions and best practices." },
-      { id: 26, category: 'prompt', icon: '🧪', title: 'Modular Testing', prompt: "Build a prompt asking for a modular architecture approach with a strong emphasis on testing. The AI should generate code with unit and integration tests." },
-      { id: 27, category: 'prompt', icon: '🚀', title: 'Rough Idea to Product', prompt: "Transform a rough product idea into a deployment-ready product prompt. This includes defining target users, core functionality, and success metrics." },
-      { id: 28, category: 'prompt', icon: '📱', title: 'No Root App Prompt', prompt: "Create a prompt for building an Android application that operates without requiring root access, avoids hidden dependencies, and is suitable for distribution." },
-      { id: 29, category: 'prompt', icon: '🌐', title: 'Full Stack Prompt', prompt: "Write a comprehensive prompt generating a full-stack solution, encompassing UI design (frontend), business logic (backend), and database schema." },
-      { id: 30, category: 'prompt', icon: '🐛', title: 'Code Repair Prompt', prompt: "Create a prompt making Gemini act as a code repair and improvement agent. The AI should identify bugs, suggest fixes, refactor code, and improve performance." },
-      { id: 31, category: 'document', icon: '📄', title: 'Project Brief', prompt: "Write a polished project brief for this application. Include an executive summary, a clear problem statement, proposed solution, and success criteria." },
-      { id: 32, category: 'document', icon: '📋', title: 'PRD Document', prompt: "Turn a product idea into a comprehensive Product Requirements Document (PRD). Detail user stories, acceptance criteria, and functional requirements." },
-      { id: 33, category: 'document', icon: '🏛️', title: 'Technical Spec', prompt: "Create a detailed technical specification for an entire Android application. Include an architecture diagram, component breakdown, and API specifications." },
-      { id: 34, category: 'document', icon: '📰', title: 'Release Notes v1.0', prompt: "Write professional release notes for version 1.0 of an application. Highlight new features, significant improvements, and critical bug fixes." },
-      { id: 35, category: 'document', icon: '📖', title: 'README Generator', prompt: "Generate a comprehensive README.md file for a software project. Include sections for setup instructions, features, usage examples, and contributing guidelines." },
-      { id: 36, category: 'document', icon: '🔒', title: 'Privacy Policy', prompt: "Create a draft privacy policy for a consumer Android application. Address data collection practices, storage, usage, and user rights." },
-      { id: 37, category: 'document', icon: '⚖️', title: 'Terms of Service', prompt: "Write terms of service for a mobile productivity app. Cover acceptable use, intellectual property, disclaimers, and limitation of liability." },
-      { id: 38, category: 'document', icon: '❓', title: 'Support FAQ', prompt: "Create a comprehensive support FAQ for an application. Organize by common issues, troubleshooting steps, account management, and payment." },
-      { id: 39, category: 'document', icon: '📝', title: 'Changelog Template', prompt: "Write a flexible changelog template for future application updates. Structure it to follow semantic versioning (MAJOR.MINOR.PATCH)." },
-      { id: 40, category: 'document', icon: '💼', title: 'Investor Summary', prompt: "Draft a concise one-page investor summary for a mobile product. Articulate the problem, solution, market opportunity, and business model." },
-      { id: 41, category: 'tool', icon: '🧪', title: 'Test Case Generator', prompt: "Build a prompt that generates detailed test cases from application requirements or user stories. Include test steps, expected results, and edge cases." },
-      { id: 42, category: 'tool', icon: '🔍', title: 'Code Audit Prompt', prompt: "Create a prompt for auditing code for potential bugs, missing features, security vulnerabilities, performance bottlenecks, and architectural issues." },
-      { id: 43, category: 'tool', icon: '🎨', title: 'UI Refactor Prompt', prompt: "Generate a prompt for refactoring an existing UI into reusable, modular components. Focus on identifying common patterns and extracting them." },
-      { id: 44, category: 'tool', icon: '🌐', title: 'Web to PWA Prompt', prompt: "Write a prompt for transforming a standard web application into an Android-friendly Progressive Web App (PWA). Include steps for setup and testing." },
-      { id: 45, category: 'tool', icon: '📊', title: 'Analytics Integration Prompt', prompt: "Build a prompt for cleanly integrating analytics and event tracking into an application. Specify desired events, parameters, and reporting." },
-      { id: 46, category: 'tool', icon: '🎯', title: 'Onboarding Flow Generator', prompt: "Create a prompt that generates engaging onboarding screens and UX copy for a new application. Focus on guiding users through core features." },
-      { id: 47, category: 'tool', icon: '🔗', title: 'API Integration Code', prompt: "Write a prompt producing robust API integration code with built-in error handling, retry mechanisms, and authentication support (e.g., OAuth)." },
-      { id: 48, category: 'tool', icon: '💾', title: 'Local-First Storage Strategy', prompt: "Create a prompt for building a local-first storage strategy for an application. Detail choices between Room, Realm, or DataStore." },
-      { id: 49, category: 'tool', icon: '⚡', title: 'Performance Optimization Prompt', prompt: "Generate a prompt for performance profiling and optimization of an application. Include steps for identifying bottlenecks and solutions." },
-      { id: 50, category: 'tool', icon: '✅', title: 'App Launch Checklist', prompt: "Write a prompt producing a full, detailed app launch checklist. Cover pre-launch marketing, app store submission, and post-launch monitoring." },
-      { id: 51, category: 'app', icon: '🌦️', title: 'Real-time Weather Map', prompt: "Build a dynamic real-time weather map application using the OpenWeatherMap API for data and the Google Maps SDK for interactive visualizations." },
-      { id: 52, category: 'app', icon: '💹', title: 'Crypto Portfolio Tracker', prompt: "Create a cryptocurrency portfolio tracker with real-time price updates via WebSockets, secure local storage using Room, and portfolio analytics." },
-      { id: 53, category: 'app', icon: '✏️', title: 'Minimalist Drawing Pad', prompt: "Design a high-performance vector drawing application with a minimalist interface. Implement custom Canvas rendering in Jetpack Compose." },
-      { id: 54, category: 'app', icon: '⏱️', title: 'Focus Pomodoro Timer', prompt: "Build a Pomodoro timer application with deep system integrations, including notification controls, screen dimming, and focus mode support." },
-      { id: 55, category: 'app', icon: '🎓', title: 'Smart Flashcards', prompt: "Create a spaced-repetition flashcard application (Anki clone) with intelligent scheduling algorithms, multimedia support, and offline functionality." },
-      { id: 56, category: 'app', icon: '📂', title: 'Local File Manager', prompt: "Develop a robust local file manager application leveraging Android's Scoped Storage. Include features like file browsing, copying, and sharing." },
-      { id: 57, category: 'app', icon: '🧘', title: 'Meditation Breathwork', prompt: "Build a meditation and breathwork application with guided sessions, customizable ambient soundscapes, and haptic feedback for breathing cues." },
-      { id: 58, category: 'app', icon: '🛍️', title: 'E-Commerce Storefront', prompt: "Create a modern e-commerce application with a compelling UI/UX, a robust logic layer for product browsing, cart management, and checkout." },
-      { id: 59, category: 'app', icon: '💬', title: 'Encrypted Chat UI', prompt: "Design an end-to-end encrypted chat application interface. Focus on secure message display, user authentication, and contact management." },
-      { id: 60, category: 'app', icon: '🌿', title: 'Plant Identifier', prompt: "Build a plant care application that uses ML Kit image labeling for plant identification. Include features for care reminders and watering schedules." },
-      { id: 61, category: 'android', icon: '📷', title: 'CameraX Implementation', prompt: "Implement a modern CameraX pipeline for an Android application, covering image capture, video recording, preview, and advanced features." },
-      { id: 62, category: 'android', icon: '📡', title: 'Bluetooth LE Scanner', prompt: "Create a robust Bluetooth Low Energy (BLE) scanning and connection service for Android. Include device discovery and GATT profile handling." },
-      { id: 63, category: 'android', icon: '🔔', title: 'FCM Push Notifications', prompt: "Set up complete Firebase Cloud Messaging (FCM) for an Android application, including token registration, handling, and custom notification designs." },
-      { id: 64, category: 'android', icon: '📱', title: 'Glance App Widgets', prompt: "Build modern home screen widgets using Jetpack Glance for an Android application. Demonstrate dynamic content updates and user interactions." },
-      { id: 65, category: 'android', icon: '🎨', title: 'Dynamic Material You', prompt: "Implement complete Material You dynamic theming for an Android application, extracting colors from the user's wallpaper and applying them." },
-      { id: 66, category: 'android', icon: '💳', title: 'In-App Purchases', prompt: "Integrate the Google Play Billing Library for in-app purchases in an Android application. Cover one-time products and subscriptions." },
-      { id: 67, category: 'android', icon: '🏃', title: 'Foreground Services', prompt: "Implement a reliable Foreground Service for location tracking or continuous background tasks in an Android application with proper notifications." },
-      { id: 68, category: 'android', icon: '📜', title: 'Paging 3 Integration', prompt: "Add Paging 3 to an existing RecyclerView or LazyColumn in an Android application. Implement data loading from a network source." },
-      { id: 69, category: 'android', icon: '🔗', title: 'App Links & Deep Links', prompt: "Configure Android App Links and Deep Links for an application. Enable seamless navigation from web URLs or other apps directly into your content." },
-      { id: 70, category: 'android', icon: '👆', title: 'Biometric Authentication', prompt: "Implement BiometricPrompt correctly for secure biometric authentication (fingerprint, face) in an Android application with fallback mechanisms." },
-      { id: 71, category: 'prompt', icon: '👁️', title: 'Code Review Bot', prompt: "Act as a strict Senior Android Reviewer. Analyze the provided Kotlin/Java code for best practices, potential bugs, and performance issues." },
-      { id: 72, category: 'prompt', icon: '⚙️', title: 'Compose Perf Tuning', prompt: "Generate a prompt that analyzes a Jetpack Compose screen for performance bottlenecks. Identify recomposition issues and inefficient layouts." },
-      { id: 73, category: 'prompt', icon: '🧪', title: 'UI Test Generator', prompt: "Write a prompt to auto-generate comprehensive Espresso and Jetpack Compose UI tests for a given screen or component." },
-      { id: 74, category: 'prompt', icon: '🔄', title: 'Legacy to Kotlin Flow', prompt: "Create a prompt for migrating RxJava/LiveData codebases to modern Kotlin Flow. Detail the steps for converting observables to flows." },
-      { id: 75, category: 'prompt', icon: '♿', title: 'Accessibility Audit', prompt: "Design a prompt that scans XML layout files and Jetpack Compose UI code for accessibility issues. Identify missing content descriptions." },
-      { id: 76, category: 'prompt', icon: '🌍', title: 'Localization Prep', prompt: "Generate a prompt to extract hardcoded strings and other localizable resources from an Android project. Suggest best practices for i18n." },
-      { id: 77, category: 'prompt', icon: '⚠️', title: 'Edge Case Handler', prompt: "Create a prompt that forces the LLM to identify and address edge cases and error conditions for a given feature or code snippet." },
-      { id: 78, category: 'prompt', icon: '📦', title: 'Gradle to Version Catalogs', prompt: "Write a prompt that converts old build.gradle files using hardcoded dependencies into a modern Gradle Version Catalogs setup." },
-      { id: 79, category: 'prompt', icon: '🚀', title: 'CICD Pipeline Builder', prompt: "Generate a prompt to construct a GitHub Actions YAML workflow for an Android project. Include steps for building, testing, and deployment." },
-      { id: 80, category: 'prompt', icon: '🔄', title: 'MVI State Machine', prompt: "Create a prompt that strictly enforces the Model-View-Intent (MVI) pattern for a given Android feature. Detail the state, intent, and result flow." },
-      { id: 81, category: 'document', icon: '🔒', title: 'Security Audit Report', prompt: "Draft a comprehensive mobile security audit report template. Include sections for identified vulnerabilities, risk assessment, and remediation." },
-      { id: 82, category: 'document', icon: '💖', title: 'Open Source Guide', prompt: "Create a detailed CONTRIBUTING.md file for an open-source project. Outline guidelines for code contributions, bug reporting, and pull requests." },
-      { id: 83, category: 'document', icon: '📚', title: 'API Documentation', prompt: "Generate a comprehensive API integration document for an internal or external API. Include endpoints, request/response formats, and examples." },
-      { id: 84, category: 'document', icon: '❓', title: 'User Manual Help Center', prompt: "Write a structured Help Center article suite for an application. Cover getting started guides, feature explanations, and troubleshooting." },
-      { id: 85, category: 'document', icon: '🧪', title: 'QA Test Plan', prompt: "Draft a comprehensive QA test plan for a software release. Include scope, testing types (functional, performance, security), and test cases." },
-      { id: 86, category: 'document', icon: '💭', title: 'Sprint Retrospective', prompt: "Create a sprint retrospective document template. Include sections for 'What went well', 'What could be improved', and 'Action items'." },
-      { id: 87, category: 'document', icon: '📋', title: 'Arch Decision Record', prompt: "Write an Architecture Decision Record (ADR) for a significant technical decision. Document the context, decision, alternatives, and consequences." },
-      { id: 88, category: 'document', icon: '📊', title: 'Database ER Diagram', prompt: "Generate an Entity-Relationship (ER) diagram representation for a given database schema. Include entities, attributes, and relationships." },
-      { id: 89, category: 'document', icon: '⚖️', title: 'EULA Draft', prompt: "Draft an End User License Agreement (EULA) for a mobile application. Cover terms of use, intellectual property rights, and disclaimers." },
-      { id: 90, category: 'document', icon: '♿', title: 'A11y Compliance Statement', prompt: "Write an Accessibility Compliance Statement for a digital product. Detail adherence to accessibility standards (e.g., WCAG 2.1)." },
-      { id: 91, category: 'document', icon: '📄', title: 'Executive Resume Builder', prompt: "Create a polished executive resume targeting a specific job title. Optimize for ATS scanning, quantify achievements, and strengthen leadership language." },
-      { id: 92, category: 'document', icon: '✨', title: 'Resume Rewrite for Impact', prompt: "Rewrite a resume so it sounds modern, confident, and results-driven. Improve action verbs, remove repetitive phrasing, and preserve authenticity." },
-      { id: 93, category: 'tool', icon: '📝', title: 'Gemini Gmail Draft Assistant', prompt: "Draft a professional Gmail reply for a given situation with appropriate tone. Provide subject line, body, and alternate polished version." },
-      { id: 94, category: 'tool', icon: '📧', title: 'Inbox Triage Prompt', prompt: "Analyze an email thread and extract the main request, deadlines, action items, and unresolved questions. Draft an efficient response." },
-      { id: 95, category: 'image-enhancing', icon: '🎨', title: 'Premium Logo Concept', prompt: "Design a premium logo that feels timeless, distinctive, and upscale. Use clean geometry, balanced negative space, and luxury restraint." },
-      { id: 96, category: 'image-enhancing', icon: '✦', title: 'Minimal Luxury Wordmark', prompt: "Create a refined wordmark logo with minimal premium styling, elegant typography, custom letterform details, and exclusive high-end feel." },
-      { id: 97, category: 'tool', icon: '🎬', title: 'YouTube Script Hook Builder', prompt: "Write a high-retention YouTube opening hook for a video with punchy, curiosity-driven language. Include 3 alternative hook styles." },
-      { id: 98, category: 'tool', icon: '🎞️', title: 'YouTube Title + Thumbnail', prompt: "Create 10 YouTube title options and 5 thumbnail concepts. Prioritize clarity, curiosity, and high click-through potential without misleading clickbait." },
-      { id: 99, category: 'document', icon: '🚀', title: 'Product Launch Ad Copy', prompt: "Write launch copy for a product aimed at a specific audience. Include strong headline, subheadline, body copy, and concise CTA." },
-      { id: 100, category: 'document', icon: '📣', title: 'Premium Social Ad Variant Set', prompt: "Create 5 premium social ad variants using different angles: luxury, problem-solution, testimonial, urgency, and story-driven. Keep concise and platform-ready." },
-      { id: 101, category: 'tool', icon: '📱', title: 'Short-Form Video Script', prompt: "Write a vertical short-form video script with strong first line, fast pacing, clear beats, and satisfying ending. Include dialogue and visual cues." },
-      { id: 102, category: 'tool', icon: '🎥', title: 'Video Shot List Builder', prompt: "Convert a video idea into a shot list with scene order, camera framing, movement, and edit notes. Make it practical for mobile filming." },
-      { id: 103, category: 'document', icon: '🧭', title: 'Brand Voice Blueprint', prompt: "Create a brand voice blueprint defining personality traits, tone rules, phrases to use/avoid, audience fit, and examples for multiple channels." },
-      { id: 104, category: 'image-enhancing', icon: '📦', title: 'Premium Packaging Direction', prompt: "Create premium packaging design directions for a product. Focus on shelf impact, tactile materials, typography, and high-end visual restraint." },
-      { id: 105, category: 'document', icon: '🌐', title: 'Landing Page Hero Copy', prompt: "Write hero section copy for a landing page selling a product. Include headline, subheadline, benefit bullets, and CTA options." },
-      { id: 106, category: 'document', icon: '📲', title: 'App Store Description', prompt: "Write an app store description explaining core value, key features, and why users should install. Make it polished and optimized for mobile reading." },
-      { id: 107, category: 'tool', icon: '📋', title: 'Meeting Summary to Action Plan', prompt: "Convert meeting notes into a concise summary with decisions, action items, owners, and deadlines. Keep it easy to scan and ready to share." },
-      { id: 108, category: 'tool', icon: '✅', title: 'Task Breakdown Prompt', prompt: "Break a high-level goal into a step-by-step plan with phases, dependencies, risks, and smallest useful next actions. Make it practical for mobile." },
-      { id: 109, category: 'image-enhancing', icon: '🔧', title: 'Ultra Precision Retouch', prompt: "Retouch a subject with ultra precision while keeping the image believable. Preserve texture, pores, detail, and realistic shadows." },
-      { id: 110, category: 'image-enhancing', icon: '🧹', title: 'Complex Object Removal', prompt: "Remove an object from the scene and rebuild hidden areas naturally. Match background texture, perspective, and depth for invisible edits." },
-      { id: 111, category: 'image-enhancing', icon: '🎬', title: 'Cinematic Color Grade', prompt: "Apply a cinematic color grade using rich contrast, controlled highlights, deep shadows, and premium filmic palette. Keep skin tones natural." },
-      { id: 112, category: 'image-enhancing', icon: '🌄', title: 'Background Replacement Master', prompt: "Replace the background with a new environment while maintaining subject shape, lighting direction, shadows, and realistic color spill." },
-      { id: 113, category: 'image-enhancing', icon: '✨', title: 'Product Cleanup Studio', prompt: "Edit a product image for premium commercial studio look. Remove dust, scratches, glare, and distractions while preserving material texture." },
-      { id: 114, category: 'image-enhancing', icon: '👁️', title: 'Face Detail Recovery', prompt: "Recover facial detail with natural texture, sharp eyes, realistic skin, and accurate expression. Improve clarity without over-sharpening." },
-      { id: 115, category: 'image-enhancing', icon: '💡', title: 'Lighting Match Repair', prompt: "Match the lighting of an edited subject to a target scene. Align direction, intensity, color temperature, and shadow softness for full integration." },
-      { id: 116, category: 'image-enhancing', icon: '🖤', title: 'Luxury Skin Retouch', prompt: "Retouch skin for a luxury editorial finish. Preserve pores and texture while smoothing distractions. Keep the face believable and camera-ready." }
+      { id: 25, category: 'document', icon: '📄', title: 'Project Brief', prompt: "Write a polished project brief for this application. Include an executive summary, a clear problem statement, proposed solution, and success criteria." },
+      { id: 26, category: 'document', icon: '📋', title: 'PRD Document', prompt: "Turn a product idea into a comprehensive Product Requirements Document (PRD). Detail user stories, acceptance criteria, and functional requirements." },
+      { id: 27, category: 'document', icon: '🏛️', title: 'Technical Spec', prompt: "Create a detailed technical specification for an entire Android application. Include an architecture diagram, component breakdown, and API specifications." },
+      { id: 28, category: 'tool', icon: '🧪', title: 'Test Case Generator', prompt: "Build a prompt that generates detailed test cases from application requirements or user stories. Include test steps, expected results, and edge cases." },
+      { id: 29, category: 'tool', icon: '🔍', title: 'Code Audit Prompt', prompt: "Create a prompt for auditing code for potential bugs, missing features, security vulnerabilities, performance bottlenecks, and architectural issues." },
+      { id: 30, category: 'tool', icon: '🎨', title: 'UI Refactor Prompt', prompt: "Generate a prompt for refactoring an existing UI into reusable, modular components. Focus on identifying common patterns and extracting them." }
     ];
 
-    // Function to get unique prompts (remove duplicates)
-    const uniquePrompts = [];
-    const seenTitles = new Set();
-    
-    prompts.forEach(p => {
-      if (!seenTitles.has(p.title.toLowerCase())) {
-        uniquePrompts.push(p);
-        seenTitles.add(p.title.toLowerCase());
-      }
-    });
-    
+    let allPrompts = [...basePrompts];
+    let displayNumber = basePrompts.length;
+    let currentFilter = 'all';
+
     function renderPrompts() {
       const grid = document.getElementById('promptGrid');
       grid.innerHTML = '';
       const searchInput = document.getElementById('searchInput').value.toLowerCase();
 
-      const filteredPrompts = uniquePrompts.filter(p => 
-        p.title.toLowerCase().includes(searchInput) || 
-        p.prompt.toLowerCase().includes(searchInput) ||
-        p.category.toLowerCase().includes(searchInput)
-      );
+      const filteredPrompts = allPrompts.filter(p => {
+        const matchesSearch = p.title.toLowerCase().includes(searchInput) || 
+                             p.prompt.toLowerCase().includes(searchInput);
+        const matchesCategory = currentFilter === 'all' || p.category === currentFilter;
+        return matchesSearch && matchesCategory;
+      });
 
-      filteredPrompts.forEach(p => {
+      filteredPrompts.forEach((p, index) => {
         const card = document.createElement('div');
-        card.className = 'prompt-card';
+        card.className = `prompt-card cat-${p.category}`;
         card.innerHTML = `
           <div class="prompt-card-header">
+            <div class="prompt-number">${index + 1}</div>
             <span class="prompt-icon">${p.icon}</span>
             <h3>${p.title}</h3>
           </div>
           <p>${p.prompt}</p>
           <div class="button-group">
             <button onclick="copyPrompt('${p.prompt.replace(/\'/g, "\\'")}')" class="neo-btn" style="flex:1">Copy</button>
-            <button onclick="sendToSandbox('${p.prompt.replace(/\'/g, "\\'")}')" class="neo-btn" style="flex:1">Sandbox</button>
           </div>`;
         grid.appendChild(card);
       });
+
+      if (filteredPrompts.length === 0) {
+        grid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--muted); font-size: 0.95rem;">No prompts found</div>';
+      }
+    }
+
+    function filterByCategory(category) {
+      currentFilter = category;
+      document.querySelectorAll('.cat-badge').forEach(badge => {
+        badge.classList.remove('active');
+      });
+      if (category === 'all') {
+        document.querySelectorAll('.cat-badge')[6].classList.add('active');
+      } else {
+        event.target.classList.add('active');
+      }
+      renderPrompts();
     }
 
     function copyPrompt(text) {
@@ -678,21 +716,9 @@
       showToast('Prompt Copied!');
     }
 
-    function sendToSandbox(text) {
-      document.getElementById('aiSandboxBox').value = text;
-      showToast('Sent to Sandbox!');
-    }
-
-    function launchGeminiApp() { 
-      const text = document.getElementById('aiSandboxBox').value; 
-      if(text) {
-        const encodedText = encodeURIComponent(text);
-        window.location.href = `intent://send?text=${encodedText}#Intent;action=android.intent.action.SEND;type=text/plain;package=com.google.android.apps.bard;end`; 
-      }
-    }
-    
     function copyAll() { 
-      navigator.clipboard.writeText(uniquePrompts.map(p => p.prompt).join('\n\n')); 
+      const filteredPrompts = allPrompts.filter(p => currentFilter === 'all' || p.category === currentFilter);
+      navigator.clipboard.writeText(filteredPrompts.map(p => p.prompt).join('\n\n')); 
       showToast('All Prompts Copied!');
     }
 
@@ -701,6 +727,70 @@
       t.innerText = message; 
       t.classList.add('show'); 
       setTimeout(() => t.classList.remove('show'), 2000); 
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tab).classList.add('active');
+      event.target.classList.add('active');
+      if (tab === 'vault') renderPrompts();
+    }
+
+    function addCustomPrompt() {
+      const title = document.getElementById('customTitle').value.trim();
+      const prompt = document.getElementById('customPrompt').value.trim();
+      const category = document.getElementById('customCategory').value;
+      const icon = document.getElementById('customIcon').value.trim() || '✨';
+
+      if (!title || !prompt) {
+        showToast('Please fill in title and prompt');
+        return;
+      }
+
+      displayNumber++;
+      allPrompts.push({
+        id: Date.now(),
+        category,
+        icon,
+        title,
+        prompt
+      });
+
+      renderCustomPromptsList();
+      clearCustomForm();
+      showToast('Prompt added successfully!');
+    }
+
+    function renderCustomPromptsList() {
+      const list = document.getElementById('customPromptsList');
+      const customPrompts = allPrompts.filter(p => !basePrompts.find(bp => bp.id === p.id));
+      
+      list.innerHTML = customPrompts.length === 0 ? 
+        '<div style="color: var(--muted); font-size: 0.9rem; text-align: center; padding: 20px;">No custom prompts yet</div>' : 
+        customPrompts.map((p, i) => `
+          <div class="prompt-card cat-${p.category}" style="gap: 8px; padding: 12px;">
+            <div class="prompt-card-header" style="gap: 8px;">
+              <span class="prompt-icon">${p.icon}</span>
+              <h3 style="font-size: 1rem;">${p.title}</h3>
+              <button onclick="deleteCustomPrompt(${p.id})" class="neo-btn" style="padding: 6px 10px; font-size: 0.75rem; min-width: auto;">❌</button>
+            </div>
+            <p style="font-size: 0.75rem; -webkit-line-clamp: 2;">${p.prompt}</p>
+          </div>
+        `).join('');
+    }
+
+    function deleteCustomPrompt(id) {
+      allPrompts = allPrompts.filter(p => p.id !== id);
+      renderCustomPromptsList();
+      showToast('Prompt deleted');
+    }
+
+    function clearCustomForm() {
+      document.getElementById('customTitle').value = '';
+      document.getElementById('customPrompt').value = '';
+      document.getElementById('customCategory').value = 'app';
+      document.getElementById('customIcon').value = '✨';
     }
 
     document.addEventListener('DOMContentLoaded', () => {
