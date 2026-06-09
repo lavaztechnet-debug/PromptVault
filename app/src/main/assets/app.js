@@ -20,15 +20,16 @@ function toggleTheme() {
 function applyTheme(theme) {
   document.body.className = theme === 'dark' ? 'dark-theme' : '';
   const btn = document.getElementById('themeToggleBtn');
-  btn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+  if (btn) btn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
   const meta = document.getElementById('themeColorMeta');
-  meta.setAttribute('content', theme === 'dark' ? '#1e272e' : '#e0e5ec');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#1e272e' : '#e0e5ec');
   localStorage.setItem('theme', theme);
 }
 
 // Render Prompts with Sequential Numbering and Fixed Layout
 function renderPrompts(filter = '') {
   const grid = document.getElementById('promptGrid');
+  if (!grid) return;
   grid.innerHTML = '';
 
   const filtered = prompts.filter(p => 
@@ -41,25 +42,30 @@ function renderPrompts(filter = '') {
     const isFav = favorites.includes(p.id);
     const card = document.createElement('div');
     card.className = 'prompt-card';
-    card.innerHTML = \`
-      <div class="prompt-number">\${index + 1}</div>
-      <div class="prompt-card-header">
-        <div class="prompt-icon">\${p.icon}</div>
-        <div style="flex: 1; min-width: 0;">
-          <h3 class="text-xl truncate">\${p.title}</h3>
-          <p class="text-sm opacity-60 uppercase tracking-wider truncate">\${p.category}</p>
-        </div>
-        <button onclick="toggleFav(\${p.id})" class="fav-btn" title="Add to Favorites">
-          \${isFav ? '❤️' : '🤍'}
-        </button>
-      </div>
-      <div class="prompt-content-area">
-        \${p.prompt}
-      </div>
-      <button onclick="copyPrompt('\${p.prompt.replace(/'/g, "\\\\'")}')" class="neo-btn primary w-full">
-        <span>📋</span> Copy Prompt
-      </button>
-    \`;
+    
+    // Use standard string concatenation to avoid backtick escaping issues in shell
+    let cardHTML = '<div class="prompt-number">' + (index + 1) + '</div>';
+    cardHTML += '<div class="prompt-card-header">';
+    cardHTML += '  <div class="prompt-icon">' + p.icon + '</div>';
+    cardHTML += '  <div style="flex: 1; min-width: 0;">';
+    cardHTML += '    <h3 class="text-xl truncate">' + p.title + '</h3>';
+    cardHTML += '    <p class="text-sm opacity-60 uppercase tracking-wider truncate">' + p.category + '</p>';
+    cardHTML += '  </div>';
+    cardHTML += '  <button onclick="toggleFav(' + p.id + ')" class="fav-btn" title="Add to Favorites">';
+    cardHTML += '    ' + (isFav ? '❤️' : '🤍');
+    cardHTML += '  </button>';
+    cardHTML += '</div>';
+    cardHTML += '<div class="prompt-content-area">';
+    cardHTML += '  ' + p.prompt;
+    cardHTML += '</div>';
+    
+    // Safely escape single quotes for the copy function
+    const escapedPrompt = p.prompt.replace(/'/g, "\\'");
+    cardHTML += '<button onclick="copyPrompt(\'' + escapedPrompt + '\')" class="neo-btn primary w-full">';
+    cardHTML += '  <span>📋</span> Copy Prompt';
+    cardHTML += '</button>';
+    
+    card.innerHTML = cardHTML;
     grid.appendChild(card);
   });
 }
@@ -67,9 +73,11 @@ function renderPrompts(filter = '') {
 // Search Logic
 function setupSearch() {
   const input = document.getElementById('searchInput');
-  input.addEventListener('input', (e) => {
-    renderPrompts(e.target.value);
-  });
+  if (input) {
+    input.addEventListener('input', (e) => {
+      renderPrompts(e.target.value);
+    });
+  }
 }
 
 // Tab Logic
@@ -80,7 +88,8 @@ function setupTabs() {
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       
       btn.classList.add('active');
-      document.getElementById(btn.dataset.tab).classList.add('active');
+      const targetTab = document.getElementById(btn.dataset.tab);
+      if (targetTab) targetTab.classList.add('active');
     });
   });
 }
@@ -93,7 +102,7 @@ function copyPrompt(text) {
 }
 
 function copyAllPrompts() {
-  const allText = prompts.map((p, i) => \`\${i+1}. [\${p.title}]\\n\${p.prompt}\`).join('\\n\\n');
+  const allText = prompts.map((p, i) => (i + 1) + '. [' + p.title + ']\n' + p.prompt).join('\n\n');
   navigator.clipboard.writeText(allText).then(() => {
     showToast('All Prompts Copied!');
   });
@@ -108,29 +117,37 @@ function toggleFav(id) {
     favorites.push(id);
   }
   localStorage.setItem('favorites', JSON.stringify(favorites));
-  renderPrompts(document.getElementById('searchInput').value);
+  const searchInput = document.getElementById('searchInput');
+  renderPrompts(searchInput ? searchInput.value : '');
 }
 
 // Note Management
 function loadNote() {
-  const saved = localStorage.getItem('prompt_note');
-  if (saved) document.getElementById('noteEditor').value = saved;
+  const editor = document.getElementById('noteEditor');
+  if (!editor) return;
   
-  document.getElementById('noteEditor').addEventListener('input', (e) => {
+  const saved = localStorage.getItem('prompt_note');
+  if (saved) editor.value = saved;
+  
+  editor.addEventListener('input', (e) => {
     localStorage.setItem('prompt_note', e.target.value);
   });
 }
 
 function saveNoteManually() {
-  const content = document.getElementById('noteEditor').value;
-  localStorage.setItem('prompt_note', content);
-  showToast('Note Saved Locally!');
+  const editor = document.getElementById('noteEditor');
+  if (editor) {
+    localStorage.setItem('prompt_note', editor.value);
+    showToast('Note Saved Locally!');
+  }
 }
 
 // UI Helpers
 function showToast(msg) {
   const toast = document.getElementById('toast');
-  toast.innerText = msg;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 3000);
+  if (toast) {
+    toast.innerText = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  }
 }
