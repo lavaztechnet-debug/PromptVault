@@ -3,26 +3,19 @@
 /* ===== COLOR PALETTE & VARIABLES ===== */
 :root {
   /* Backgrounds */
-  --bg-base: #39575e; /* Deep slate teal */
-  --surface-glass: rgba(255, 255, 255, 0.08);
-  --surface-solid: #344c53;
-  --surface-dark: #2a3e44;
-  --surface-inset: rgba(0, 0, 0, 0.25);
-
-  /* Accents */
-  --accent-cyan: #00e5ff;
-  --accent-cyan-glow: rgba(0, 229, 255, 0.4);
-  --danger: #ff4b4b;
-
+  --bg-base: #e0e5ec; /* Classic light neomorphism grey */
+  
   /* Text */
-  --text-main: #ffffff;
-  --text-muted: rgba(255, 255, 255, 0.6);
-
-  /* Borders & Shadows */
-  --border-light: rgba(255, 255, 255, 0.25);
-  --border-faint: rgba(255, 255, 255, 0.08);
-  --shadow-dark: rgba(0, 0, 0, 0.4);
-  --shadow-light: rgba(255, 255, 255, 0.1);
+  --text-main: #2d3436; /* Dark grey for high contrast titles */
+  --text-muted: #636e72; /* Softer grey for subtitles/descriptions */
+  
+  /* Shadows */
+  /* The core of this style relies on these specific shadow tones */
+  --shadow-dark: #a3b1c6; 
+  --shadow-light: #ffffff;
+  
+  /* Accents */
+  --accent-color: #00cec9;
 }
 
 /* ===== GLOBAL STYLES ===== */
@@ -35,8 +28,6 @@
 
 body {
   background-color: var(--bg-base);
-  /* Subtle noise texture to mimic the matte/tactile background */
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.06'/%3E%3C/svg%3E");
   color: var(--text-main);
   font-family: 'Outfit', sans-serif;
   line-height: 1.6;
@@ -44,12 +35,20 @@ body {
   min-height: 100vh;
 }
 
-h1, h2, h3 { font-weight: 600; letter-spacing: -0.5px; }
+h1, h2, h3 { 
+  font-weight: 700; 
+  letter-spacing: -0.5px; 
+  color: var(--text-main);
+}
 
-/* Custom Scrollbar for a polished look */
+p {
+  color: var(--text-muted);
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--surface-glass); border-radius: 10px; }
+::-webkit-scrollbar-thumb { background: #b8c6db; border-radius: 10px; }
 
 /* ===== LAYOUT & CONTAINERS ===== */
 .max-w-2xl {
@@ -58,25 +57,21 @@ h1, h2, h3 { font-weight: 600; letter-spacing: -0.5px; }
   margin-right: auto;
 }
 
-/* Glassmorphism Panels (matches the frosted overlapping cards) */
+/* Extruded Panels (Matches the soft, pillowy cards in the image) */
 .neo-container, .prompt-card {
-  background: var(--surface-glass);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius: 20px;
-  padding: 20px;
-  border: 1px solid var(--border-faint);
-  border-top: 1px solid var(--border-light); /* Top highlight for 3D edge */
-  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  background: var(--bg-base);
+  border-radius: 24px;
+  padding: 24px;
+  border: none; /* True neomorphism has no borders */
   box-shadow: 
     12px 12px 24px var(--shadow-dark),
-    -4px -4px 12px var(--shadow-light);
+    -12px -12px 24px var(--shadow-light);
+  margin-bottom: 16px;
 }
 
 .prompt-card {
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s ease;
 }
 
 .prompt-card-header {
@@ -86,113 +81,108 @@ h1, h2, h3 { font-weight: 600; letter-spacing: -0.5px; }
   margin-bottom: 12px;
 }
 
+/* Icon wrapper matching the colorful icons in the reference */
 .prompt-icon {
   font-size: 1.5rem;
-  background: var(--surface-inset);
-  padding: 8px;
-  border-radius: 12px;
-  box-shadow: inset 2px 2px 6px rgba(0,0,0,0.3);
+  background: var(--bg-base);
+  padding: 10px;
+  border-radius: 16px;
+  box-shadow: 
+    inset 4px 4px 8px var(--shadow-dark),
+    inset -4px -4px 8px var(--shadow-light);
 }
 
-/* ===== FORM ELEMENTS (The "Pushed-In" Look) ===== */
+/* ===== FORM ELEMENTS (The "Pressed-In" Look) ===== */
 .form-label {
   display: block;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  margin-bottom: 6px;
-  font-weight: 400;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  margin-bottom: 8px;
+  font-weight: 600;
 }
 
-/* Deep inset text fields from the image */
+/* Deep inset text fields */
 .neo-inset {
   width: 100%;
-  padding: 14px 16px;
-  background: var(--surface-inset);
-  border: 1px solid transparent;
-  border-radius: 14px;
+  padding: 16px 20px;
+  background: var(--bg-base);
+  border: none;
+  border-radius: 18px;
   color: var(--text-main);
   font-family: 'Outfit', sans-serif;
   font-size: 1rem;
   box-shadow: 
-    inset 4px 4px 10px rgba(0, 0, 0, 0.5), 
-    inset -2px -2px 6px rgba(255, 255, 255, 0.05);
+    inset 6px 6px 12px var(--shadow-dark), 
+    inset -6px -6px 12px var(--shadow-light);
   transition: all 0.3s ease;
 }
 
-.neo-inset::placeholder { color: var(--text-muted); }
+.neo-inset::placeholder { 
+  color: #9ba7b6; 
+}
 
-/* The glowing cyan focus ring */
 .neo-inset:focus {
   outline: none;
-  border: 1px solid var(--accent-cyan);
   box-shadow: 
-    inset 4px 4px 10px rgba(0, 0, 0, 0.5), 
-    0 0 15px var(--accent-cyan-glow);
+    inset 8px 8px 16px var(--shadow-dark), 
+    inset -8px -8px 16px var(--shadow-light);
 }
 
 /* ===== BUTTONS (The 3D Extruded Look) ===== */
 .button-group {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   width: 100%;
 }
 
 .neo-btn {
-  background: var(--surface-solid);
+  background: var(--bg-base);
   color: var(--text-main);
   border: none;
-  padding: 12px 20px;
-  border-radius: 12px;
+  padding: 14px 24px;
+  border-radius: 16px;
   font-family: 'Outfit', sans-serif;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  border-top: 1px solid var(--border-light);
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 
-    6px 6px 14px var(--shadow-dark),
-    -4px -4px 10px var(--shadow-light);
-  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    8px 8px 16px var(--shadow-dark),
+    -8px -8px 16px var(--shadow-light);
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
 }
 
-/* Hover/Active states flatten the shadow as requested in the image specs */
+/* Hover/Active states - physical sinking effect */
 .neo-btn:hover {
-  transform: translateY(-1px);
   box-shadow: 
-    8px 8px 16px var(--shadow-dark),
-    -4px -4px 12px var(--shadow-light);
+    10px 10px 20px var(--shadow-dark),
+    -10px -10px 20px var(--shadow-light);
 }
 
 .neo-btn:active {
-  transform: translateY(2px);
-  border-top: 1px solid transparent;
   box-shadow: 
-    inset 4px 4px 8px var(--shadow-dark),
-    inset -2px -2px 6px rgba(255, 255, 255, 0.05);
+    inset 6px 6px 12px var(--shadow-dark),
+    inset -6px -6px 12px var(--shadow-light);
 }
 
-/* Action button variation (Cyan glow) */
+/* Primary Action Button Variation */
 .neo-btn.primary {
-  background: var(--accent-cyan);
-  color: #000000;
-  border-top: 1px solid rgba(255,255,255,0.6);
-  box-shadow: 
-    0 0 15px var(--accent-cyan-glow),
-    4px 4px 10px var(--shadow-dark);
+  color: var(--accent-color);
 }
 
 /* ===== TABS & FILTERS ===== */
 .tab-nav {
   display: flex;
   justify-content: center;
-  background: var(--surface-inset);
-  padding: 6px;
-  border-radius: 20px;
-  margin-bottom: 24px;
-  box-shadow: inset 3px 3px 8px rgba(0,0,0,0.4);
+  background: var(--bg-base);
+  padding: 10px;
+  border-radius: 24px;
+  margin-bottom: 30px;
+  box-shadow: 
+    inset 6px 6px 12px var(--shadow-dark),
+    inset -6px -6px 12px var(--shadow-light);
 }
 
 .tab-btn {
@@ -200,49 +190,49 @@ h1, h2, h3 { font-weight: 600; letter-spacing: -0.5px; }
   background: transparent;
   color: var(--text-muted);
   border: none;
-  padding: 10px 20px;
-  border-radius: 14px;
+  padding: 12px 20px;
+  border-radius: 16px;
   font-family: 'Outfit', sans-serif;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .tab-btn.active {
-  background: var(--surface-solid);
+  background: var(--bg-base);
   color: var(--text-main);
-  border-top: 1px solid var(--border-light);
   box-shadow: 
-    4px 4px 10px var(--shadow-dark),
-    -2px -2px 6px var(--shadow-light);
+    6px 6px 12px var(--shadow-dark),
+    -6px -6px 12px var(--shadow-light);
 }
 
 .category-filter {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 24px;
 }
 
 .cat-badge {
-  background: var(--surface-dark);
+  background: var(--bg-base);
   color: var(--text-muted);
-  padding: 6px 14px;
+  padding: 10px 18px;
   border-radius: 20px;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  border: 1px solid transparent;
-  box-shadow: 3px 3px 8px var(--shadow-dark);
+  border: none;
+  box-shadow: 
+    5px 5px 10px var(--shadow-dark),
+    -5px -5px 10px var(--shadow-light);
   transition: all 0.2s ease;
 }
 
 .cat-badge.active {
-  color: var(--accent-cyan);
-  border: 1px solid var(--accent-cyan);
+  color: var(--accent-color);
   box-shadow: 
-    0 0 10px var(--accent-cyan-glow),
-    3px 3px 8px var(--shadow-dark);
+    inset 4px 4px 8px var(--shadow-dark),
+    inset -4px -4px 8px var(--shadow-light);
 }
 
 /* Utility to hide inactive tabs */
@@ -250,26 +240,28 @@ h1, h2, h3 { font-weight: 600; letter-spacing: -0.5px; }
 .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 /* ===== TOAST NOTIFICATION ===== */
 #toast {
   position: fixed;
-  bottom: -60px;
+  bottom: -80px;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--accent-cyan);
-  color: #000;
-  padding: 12px 24px;
+  background: var(--bg-base);
+  color: var(--text-main);
+  padding: 14px 28px;
   border-radius: 30px;
   font-weight: 800;
-  box-shadow: 0 0 20px var(--accent-cyan-glow);
+  box-shadow: 
+    8px 8px 16px var(--shadow-dark),
+    -8px -8px 16px var(--shadow-light);
   transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   z-index: 1000;
 }
 
 #toast.show {
-  bottom: 30px;
+  bottom: 40px;
 }
