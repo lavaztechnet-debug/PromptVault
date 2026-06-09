@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#e0e5ec" id="themeColorMeta">
-  <meta name="description" content="Lava's Prompt Vault">
   <title>Lava's Prompt Vault</title>
-  
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
@@ -14,109 +12,36 @@
 <body>
   <div id="toast">Action Successful!</div>
 
-  <div id="variableModal" class="modal-overlay">
-    <div class="neo-container modal-content">
-      <h3 style="margin-bottom: 12px; font-size: 1.2rem;">Fill in Variables</h3>
-      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
-        Customize this prompt before using it:
-      </p>
-      <div id="variableInputs" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;"></div>
-      <div class="button-group">
-        <button onclick="executeModalAction()" class="neo-btn primary" style="flex: 1;">🚀 Run</button>
-        <button onclick="closeModal()" class="neo-btn">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="handoffModal" class="modal-overlay">
-    <div class="neo-container modal-content" style="text-align: center;">
-      <div style="font-size: 2.5rem; margin-bottom: 12px;">✅</div>
-      <h3 style="margin-bottom: 8px; font-size: 1.3rem;">Prompt Copied!</h3>
-      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 24px;">
-        Your prompt is on your clipboard. Tap below to securely open your browser.
-      </p>
-      <a id="handoffLink" href="#" target="_blank" class="neo-btn" style="text-decoration: none; justify-content: center; margin-bottom: 12px; width: 100%; font-weight: 800; color: #00cec9;">🌍 Open...</a>
-      <button onclick="closeHandoffModal()" class="neo-btn" style="width: 100%;">Close</button>
-    </div>
-  </div>
-  
-  <div class="max-w-2xl mx-auto">
+  <div class="max-w-2xl mx-auto p-4">
     <header class="text-center my-8" style="position: relative;">
-      <button onclick="toggleTheme()" class="neo-btn" style="position: absolute; right: 0; top: 0; padding: 10px; border-radius: 50%;" aria-label="Toggle Theme" id="themeToggleBtn">🌙</button>
-      <h1 class="text-4xl mb-6 tracking-tight">Lava's Prompt Vault</h1>
+      <button onclick="toggleTheme()" class="neo-btn" style="position: absolute; right: 0; top: 0; padding: 10px; border-radius: 50%;" id="themeToggleBtn">🌙</button>
+      <h1 class="text-3xl mb-6 tracking-tight">Lava's Vault</h1>
       
       <div class="tab-nav">
         <button class="tab-btn active" data-tab="vault">📚 Vault</button>
-        <button class="tab-btn" data-tab="create">✏️ Create</button>
+        <button class="tab-btn" data-tab="notepad">📝 Notes</button>
+        <button class="tab-btn" data-tab="create">✏️ Add</button>
       </div>
     </header>
 
     <div id="vault" class="tab-content active">
       <input type="text" id="searchInput" class="neo-inset" placeholder="🔍 Search prompts..." style="margin-bottom: 16px; width: 100%;">
-      
-      <div class="category-filter">
-        <button class="cat-badge active" data-category="all">All</button>
-        <button class="cat-badge" data-category="favorites" style="color: #ff4757;">❤️ Favorites</button>
-        <button class="cat-badge" data-category="app">App</button>
-        <button class="cat-badge" data-category="android">Android</button>
-        <button class="cat-badge" data-category="prompt">Prompt</button>
-        <button class="cat-badge" data-category="document">Document</button>
-        <button class="cat-badge" data-category="tool">Tool</button>
-        <button class="cat-badge" data-category="image-enhancing">Visual</button>
+      <div id="promptGrid" class="grid grid-cols-1 gap-5"></div>
+    </div>
+
+    <div id="notepad" class="tab-content">
+      <div class="neo-container">
+        <h2 class="mb-4">📝 Quick Note</h2>
+        <textarea id="noteEditor" class="neo-inset" placeholder="Write your thoughts here... saved automatically." style="min-height: 300px;"></textarea>
       </div>
-      
-      <div id="promptGrid" class="grid grid-cols-1 gap-5" style="margin-top: 16px;"></div>
     </div>
 
     <div id="create" class="tab-content">
       <div class="neo-container">
-        <h2>✨ Create & Manage</h2>
-
-        <div style="margin: 20px 0; padding: 16px; border-radius: 16px; background: var(--bg-base); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);">
-          <h3 style="font-size: 1rem; margin-bottom: 12px;">💾 Data Backup</h3>
-          <div class="button-group">
-            <button onclick="exportData()" class="neo-btn" style="flex: 1; font-size: 0.8rem;">📥 Export Data</button>
-            <button onclick="document.getElementById('importFile').click()" class="neo-btn" style="flex: 1; font-size: 0.8rem;">📤 Restore Data</button>
-            <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
-          </div>
-        </div>
-        
-        <div style="margin-top: 24px;">
-          <label class="form-label">Title</label>
-          <input type="text" id="customTitle" class="neo-inset" placeholder="Enter prompt title...">
-        </div>
-
-        <div style="margin-top: 12px;">
-          <label class="form-label">Prompt Text</label>
-          <textarea id="customPrompt" class="neo-inset" placeholder="Enter prompt text. Use [brackets] to create fill-in variables!" style="min-height: 120px; resize: vertical;"></textarea>
-        </div>
-
-        <div style="margin-top: 12px;">
-          <label class="form-label">Category</label>
-          <select id="customCategory" class="neo-inset">
-            <option value="app">📱 App</option>
-            <option value="android">🤖 Android</option>
-            <option value="prompt">✍️ Prompt</option>
-            <option value="document">📄 Document</option>
-            <option value="tool">🛠️ Tool</option>
-            <option value="image-enhancing">🎨 Visual</option>
-          </select>
-        </div>
-
-        <div style="margin-top: 12px;">
-          <label class="form-label">Icon Emoji</label>
-          <input type="text" id="customIcon" class="neo-inset" placeholder="Enter emoji..." value="✨" maxlength="2">
-        </div>
-
-        <div class="button-group" style="margin-top: 20px;">
-          <button onclick="addCustomPrompt()" class="neo-btn primary" style="flex: 2;">➕ Add to Vault</button>
-          <button onclick="clearCustomForm()" class="neo-btn" style="flex: 1;">🔄 Clear</button>
-        </div>
-
-        <div style="margin-top: 32px;">
-          <h3 style="margin-bottom: 16px;">📌 Custom Prompts</h3>
-          <div id="customPromptsList" style="display: flex; flex-direction: column; gap: 16px;"></div>
-        </div>
+        <h2>✨ Add Prompt</h2>
+        <input type="text" id="customTitle" class="neo-inset" placeholder="Title" style="margin-top:20px;">
+        <textarea id="customPrompt" class="neo-inset" placeholder="Prompt text..." style="min-height: 100px; margin-top:12px;"></textarea>
+        <button onclick="addCustomPrompt()" class="neo-btn primary w-full mt-4">➕ Add to Vault</button>
       </div>
     </div>
   </div>
