@@ -52,7 +52,7 @@ const prompts = [
   { id: 47, category: 'tool', icon: '🔗', title: 'API Integration', prompt: 'Act as a Backend Engineer. API Integrator. Constraints: Robust HTTP client logic, header/auth injection, and mapping response to domain objects. Output: Provide API code boilerplate.' },
   { id: 48, category: 'tool', icon: '💾', title: 'Storage Tool', prompt: 'Act as an Architect. Storage Strategy. Constraints: Local vs Cloud trade-offs, syncing strategies, and migration scripts. Output: Provide storage strategy prompt.' },
   { id: 49, category: 'tool', icon: '⚡', title: 'Performance Tool', prompt: 'Act as an SRE. Perf Optimizer. Constraints: Profile memory, CPU, and network usage. Provide remediation. Output: Provide performance profiling prompt.' },
-  { id: 50, category: 'tool', icon: '✅', title: 'Launch Tool', prompt: 'Act as a Release Lead. Launch Checklist. Constraints: Pre-launch checklist including marketing, QA, and store metadata. Output: Provide comprehensive launch plan prompt.' }
+  { id: 50, category: 'tool', icon: '✅', title: 'Launch Tool', prompt: 'Act as a Release Lead. Launch Checklist. Constraints: Pre-launch checklist including marketing, QA, and store metadata. Output: Provide comprehensive launch plan prompt.' },
  
   // --- Enhanced IDs 51-100 ---
   { id: 51, category: 'image-enhancing', icon: '🎨', title: 'Neumorphic UI', prompt: 'Act as a Lead UI Designer. Render a neumorphic interface. Objective: Create soft, extruded digital surfaces. Constraints: Use a monochromatic base, subtle drop shadows (light top-left, dark bottom-right), and tactile material finishes. Output: Highly detailed 8k rendering.' },
