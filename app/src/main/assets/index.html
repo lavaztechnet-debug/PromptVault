@@ -7,41 +7,49 @@
   <title>Lava's Prompt Vault</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style (2).css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div id="toast">Action Successful!</div>
 
   <div class="max-w-2xl mx-auto p-4">
     <header class="text-center my-8" style="position: relative;">
-      <button onclick="toggleTheme()" class="neo-btn" style="position: absolute; right: 0; top: 0; padding: 10px; border-radius: 50%;" id="themeToggleBtn">🌙</button>
-      <h1 class="text-3xl mb-6 tracking-tight">Lava's Vault</h1>
+      <button onclick="toggleTheme()" class="neo-btn" style="position: absolute; right: 0; top: 0; padding: 12px; border-radius: 50%; width: 48px; height: 48px;" id="themeToggleBtn">🌙</button>
+      <h1 class="text-4xl mb-8 tracking-tight font-extrabold">Lava's Vault</h1>
       
       <div class="tab-nav">
-        <button class="tab-btn active" data-tab="vault">📚 Vault</button>
+        <button class="tab-btn active" data-tab="vault">📂 Vault</button>
         <button class="tab-btn" data-tab="notepad">📝 Notes</button>
       </div>
     </header>
 
     <div id="vault" class="tab-content active">
-      <div class="flex gap-2 mb-4">
+      <div class="flex gap-4 mb-8">
         <input type="text" id="searchInput" class="neo-inset" placeholder="🔍 Search prompts..." style="flex: 1;">
-        <button onclick="copyAllPrompts()" class="neo-btn">📋 Copy All</button>
+        <button onclick="copyAllPrompts()" class="neo-btn" title="Copy All Prompts">
+          <span>📋</span> All
+        </button>
       </div>
-      <div id="promptGrid" class="grid grid-cols-1 gap-5"></div>
+      <div id="promptGrid" class="grid grid-cols-1 gap-6">
+        <!-- Prompts will be rendered here -->
+      </div>
     </div>
 
     <div id="notepad" class="tab-content">
       <div class="neo-container">
-        <h2 class="mb-4">📝 Quick Note</h2>
-        <textarea id="noteEditor" class="neo-inset" placeholder="Write your thoughts here..." style="min-height: 300px;"></textarea>
-        <button onclick="saveNoteManually()" class="neo-btn primary w-full mt-4">💾 Save Note</button>
+        <h2 class="text-2xl mb-6 flex items-center gap-3">
+          <span>📝</span> Quick Note
+        </h2>
+        <textarea id="noteEditor" class="neo-inset mb-6" placeholder="Capture your thoughts or custom prompts here..." style="min-height: 400px; resize: vertical;"></textarea>
+        <button onclick="saveNoteManually()" class="neo-btn primary w-full">
+          <span>💾</span> Save Note
+        </button>
       </div>
     </div>
   </div>
 
-  <script src="prompts (2).js" defer></script>
-<script src="app (3).js" defer></script>
-
+  <!-- Load data first, then app logic -->
+  <script src="prompts.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
