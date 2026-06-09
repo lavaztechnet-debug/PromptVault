@@ -6,11 +6,6 @@ let customPrompts = [];
 let favoritePrompts = [];
 let currentFilter = 'all';
 
-// Modal State
-let currentPromptTemplate = '';
-let currentPromptAction = ''; 
-let currentVariables = [];
-
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
   loadData();
@@ -18,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderPrompts();
   setupEventListeners();
   renderCustomPromptsList();
-  initNotepad(); // Ensure Notepad initializes
+  initNotepad();
 });
 
 function loadData() {
@@ -108,17 +103,17 @@ function renderPrompts(filterQuery = '') {
         <h3 style="font-size: 1.1rem; padding-right: 30px;">${p.title}</h3>
         <button onclick="toggleFavorite(${p.id})" class="fav-btn">${isFav ? '❤️' : '🤍'}</button>
       </div>
-      <p style="font-size: 0.85rem; margin-bottom: 12px;">${escapeHtml(p.prompt)}</p>
-      <button onclick="handlePromptAction('${escapeForJsString(p.prompt)}')" class="neo-btn w-full">📋 Copy</button>
+      <p style="font-size: 0.85rem; margin-bottom: 12px; opacity: 0.8;">${escapeHtml(p.prompt)}</p>
+      <button onclick="copyToClipboard('${escapeForJsString(p.prompt)}')" class="neo-btn w-full">📋 Copy Prompt</button>
     `;
     grid.appendChild(card);
   });
 }
 
 // ===== ACTIONS =====
-function handlePromptAction(promptText) {
-  navigator.clipboard.writeText(promptText);
-  showToast('📋 Copied to clipboard!');
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text);
+  showToast('📋 Copied!');
 }
 
 function toggleFavorite(id) {
@@ -147,11 +142,14 @@ function renderCustomPromptsList() {
 function addCustomPrompt() {
   const title = document.getElementById('customTitle').value;
   const prompt = document.getElementById('customPrompt').value;
+  const cat = document.getElementById('customCategory').value;
+  const icon = document.getElementById('customIcon').value || '✨';
+  
   if (!title || !prompt) return showToast('❌ Fill fields');
   
-  const newPrompt = { id: Date.now(), category: document.getElementById('customCategory').value, icon: document.getElementById('customIcon').value || '✨', title, prompt };
+  const newPrompt = { id: Date.now(), category: cat, icon: icon, title: title, prompt: prompt };
   customPrompts.push(newPrompt);
-  allPrompts.push(newPrompt);
+  allPrompts = [...prompts, ...customPrompts];
   saveData();
   renderCustomPromptsList();
   renderPrompts();
