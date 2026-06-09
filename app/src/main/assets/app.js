@@ -181,6 +181,7 @@ function executeModalAction() {
   executeFinalAction(finalizedPrompt, currentPromptAction);
 }
 
+// ===== THE FIX: HANDOFF UI =====
 function executeFinalAction(text, action) {
   // Always copy to clipboard as a reliable mobile fallback
   navigator.clipboard.writeText(text).catch(err => console.log('Clipboard fallback failed'));
@@ -189,31 +190,28 @@ function executeFinalAction(text, action) {
     showToast('📋 Copied to clipboard!');
   } 
   else if (action === 'chatgpt') {
-    showToast('Opening ChatGPT...');
     const url = 'https://chatgpt.com/?q=' + encodeURIComponent(text);
-    forceExternalLink(url);
+    showHandoffModal(url, 'ChatGPT');
   } 
   else if (action === 'gemini') {
-    showToast('Opening Gemini...');
     const url = 'https://gemini.google.com/?prompt=' + encodeURIComponent(text);
-    forceExternalLink(url);
+    showHandoffModal(url, 'Gemini');
   }
 }
 
-// Helper function to bypass basic WebView restrictions
-function forceExternalLink(url) {
-  // Method 1: The _system target tells APK wrappers to escape the WebView
-  const link = document.createElement('a');
-  link.href = url;
-  link.target = '_system'; 
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+function showHandoffModal(url, aiName) {
+  const modal = document.getElementById('handoffModal');
+  const link = document.getElementById('handoffLink');
   
-  // Method 2: Fallback for environments that prefer window.open
-  setTimeout(() => {
-    window.open(url, '_system');
-  }, 100);
+  // Attach the URL directly to the physical <a> tag
+  link.href = url;
+  link.innerText = `🌍 Open ${aiName}`;
+  
+  modal.classList.add('active');
+}
+
+function closeHandoffModal() {
+  document.getElementById('handoffModal').classList.remove('active');
 }
 
 // ===== CUSTOM PROMPT MANAGEMENT =====
