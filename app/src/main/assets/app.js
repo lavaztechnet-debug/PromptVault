@@ -26,7 +26,7 @@ function applyTheme(theme) {
   localStorage.setItem('theme', theme);
 }
 
-// Render Prompts with Sequential Numbering
+// Render Prompts with Sequential Numbering and Fixed Layout
 function renderPrompts(filter = '') {
   const grid = document.getElementById('promptGrid');
   grid.innerHTML = '';
@@ -45,17 +45,16 @@ function renderPrompts(filter = '') {
       <div class="prompt-number">${index + 1}</div>
       <div class="prompt-card-header">
         <div class="prompt-icon">${p.icon}</div>
-        <div>
-          <h3 class="text-xl">${p.title}</h3>
-          <p class="text-sm opacity-60 uppercase tracking-wider">${p.category}</p>
+        <div style="flex: 1; min-width: 0;">
+          <h3 class="text-xl truncate">${p.title}</h3>
+          <p class="text-sm opacity-60 uppercase tracking-wider truncate">${p.category}</p>
         </div>
         <button onclick="toggleFav(${p.id})" class="fav-btn" title="Add to Favorites">
           ${isFav ? '❤️' : '🤍'}
         </button>
       </div>
-      <div class="neo-inset-mini p-4 rounded-xl mb-6 flex-1 text-sm overflow-hidden" style="max-height: 150px; position: relative;">
+      <div class="prompt-content-area">
         ${p.prompt}
-        <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 30px; background: linear-gradient(transparent, var(--bg-base));"></div>
       </div>
       <button onclick="copyPrompt('${p.prompt.replace(/'/g, "\\'")}')" class="neo-btn primary w-full">
         <span>📋</span> Copy Prompt
@@ -98,49 +97,6 @@ function copyAllPrompts() {
   navigator.clipboard.writeText(allText).then(() => {
     showToast('All Prompts Copied!');
   });
-}
-
-// HTML Export Logic
-function exportToHTML() {
-  const htmlContent = `
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Prompt Vault Export</title>
-  <style>
-    body { font-family: sans-serif; padding: 40px; line-height: 1.6; background: #f4f7f6; color: #333; }
-    .container { max-width: 800px; margin: auto; }
-    .card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    .number { color: #00cec9; font-weight: bold; margin-right: 10px; }
-    .title { font-size: 1.2rem; font-weight: bold; }
-    .category { font-size: 0.8rem; color: #999; text-transform: uppercase; margin-bottom: 10px; }
-    pre { background: #eee; padding: 15px; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Prompt Vault Export - ${new Date().toLocaleDateString()}</h1>
-    ${prompts.map((p, i) => `
-      <div class="card">
-        <div class="category">${p.category}</div>
-        <div class="title"><span class="number">#${i + 1}</span> ${p.icon} ${p.title}</div>
-        <pre>${p.prompt}</pre>
-      </div>
-    `).join('')}
-  </div>
-</body>
-</html>`;
-
-  const blob = new Blob([htmlContent], { type: 'text/html' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `PromptVault_Export_${new Date().toISOString().split('T')[0]}.html`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  showToast('HTML Export Started!');
 }
 
 // Favorites Logic
