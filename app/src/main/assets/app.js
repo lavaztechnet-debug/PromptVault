@@ -195,16 +195,27 @@ function executeFinalAction(text, action) {
   } 
   else if (action === 'chatgpt') {
     showToast('Opening ChatGPT...');
-    const encodedText = encodeURIComponent(text);
-    // Forces Android to open the default external web browser (e.g., Chrome)
-    window.location.href = `intent://chatgpt.com/?q=${encodedText}#Intent;scheme=https;action=android.intent.action.VIEW;end;`;
+    const url = 'https://chatgpt.com/?q=' + encodeURIComponent(text);
+    forceExternalLink(url);
   } 
   else if (action === 'gemini') {
     showToast('Opening Gemini...');
-    const encodedText = encodeURIComponent(text);
-    // Forces Android to open the default external web browser (e.g., Chrome)
-    window.location.href = `intent://gemini.google.com/?prompt=${encodedText}#Intent;scheme=https;action=android.intent.action.VIEW;end;`;
+    const url = 'https://gemini.google.com/?prompt=' + encodeURIComponent(text);
+    forceExternalLink(url);
   }
+}
+
+// Helper function to bypass basic WebView restrictions
+function forceExternalLink(url) {
+  const link = document.createElement('a');
+  link.href = url;
+  link.target = '_blank'; // Tells the APK wrapper this should be an external window
+  link.rel = 'noopener noreferrer';
+  
+  // Append, click, and remove the invisible link
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 
 // ===== CUSTOM PROMPT MANAGEMENT =====
