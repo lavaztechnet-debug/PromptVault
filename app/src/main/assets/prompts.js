@@ -1,5 +1,5 @@
 /**
- * Lava's Prompt Vault - Complete Enhanced Data (1-250)
+ * Lava's Prompt Vault - Complete Enhanced Data (1-257)
  */
 const prompts = [
   // --- Enhanced IDs 1-50 ---
@@ -210,7 +210,7 @@ const prompts = [
   { id: 199, category: 'image-enhancing', icon: '🪩', title: 'Disco', prompt: 'Act as a 70s Set Designer. Transform the subject into a mirrored disco ball. Constraints: Hundreds of tiny, flat square mirrors mapping the form, reflecting a chaotic room of colored lights. Output: Retro mirrored 3D render.' },
   { id: 200, category: 'image-enhancing', icon: '🌈', title: 'Prismatic Prism', prompt: 'Act as a Lighting Engineer. Shoot through a glass prism. Constraints: Severe optical distortion on the edges, heavy chromatic aberration (rainbow fringing), and internal glass reflections overlaying the image. Output: Experimental prism photography.' },
 
-  // --- Enhanced IDs 201-250 ---
+  // --- Enhanced IDs 201-257 ---
   { id: 201, category: 'tool', icon: '🔗', title: 'Relationship Audit', prompt: 'Act as a Senior Relationship Strategist. Perform a networking audit. Constraints: Analyze thread for high-value neglected contacts. Determine last sentiment. Output: Provide 3 short, personalized, non-transactional "value-add" outreach drafts.' },
   { id: 202, category: 'tool', icon: '💳', title: 'Subscription Audit', prompt: 'Act as a Financial Auditor. Analyze transaction data for active subscriptions. Constraints: Cross-reference with engagement metrics to find "ghost" subs (unused for 45 days). Output: Markdown table of costs and draft cancellation emails.' },
   { id: 203, category: 'android', icon: '🔄', title: 'Activity Transition', prompt: 'Act as an Android UI/UX Dev. Build custom Activity transitions. Constraints: Use modern `ActivityOptionsCompat` and Shared Element Transitions. Handle the back-stack animation cleanly. Output: Provide transition XML and Kotlin execution code.' },
@@ -262,4 +262,12 @@ const prompts = [
   { id: 249, category: 'image-enhancing', icon: '🧩', title: 'Cubist Glass', prompt: 'Act as a Modernist Artist. Render as stained glass cubism. Constraints: Subject fragmented into abstract geometric shapes, thick lead lines separating panes, and vibrant, saturated colors transmitting light. Output: Cubist stained glass artwork.' },
   { id: 250, category: 'image-enhancing', icon: '🌊', title: 'Ukiyo-e Woodblock', prompt: 'Act as a Japanese Ukiyo-e Master. Render as a woodblock print. Constraints: Flat color fills, bold ink outlines, simplified isometric perspectives, and a distinct aged paper texture overlay. Output: Traditional Ukiyo-e art style.' },
   { id: 251, category: 'image-enhancing', icon: '🌌', title: '3D-Depth Parallax Landscape', prompt: 'Act as a professional cinematographer and 3D motion artist. Create a highly detailed cinematic landscape suitable for a 2.5D parallax effect. Constraints: 1. Extreme depth separation: distinct foreground (sharp), mid-ground, and background (atmospheric blur). 2. Layered volume using strong light/shadow. 3. Incorporate atmospheric perspective (fog/haze) to separate background. 4. No overlapping blur on foreground subjects to allow for clean cut-outs. Output: Cinematic still image with clear depth-map potential.' },
+  
+  // --- New Automation & Persona Prompts ---
+  { id: 252, category: 'automation', icon: '⚡', title: 'Python File Organizer', prompt: 'Act as a Python Automation Expert. Write a script to organize a cluttered "Downloads" directory. Constraints: Create subfolders based on file extension (.pdf, .jpg, .zip). Move files accordingly. Log every move. Output: Python script.' },
+  { id: 253, category: 'automation', icon: '🔗', title: 'Git Commit Auto-Gen', prompt: 'Act as a DevOps Engineer. Create a Git commit message generator. Constraints: Analyze a provided `git diff` and output a summary using Conventional Commit format (feat, fix, docs, refactor). Output: Git Commit Message.' },
+  { id: 254, category: 'persona', icon: '🎭', title: 'The Radical Critic', prompt: 'Act as a "Radical Critic." Constraints: Review my [Work/Code/Idea]. Your goal is to find the single point of failure. Be brutally honest, do not offer pleasantries, and focus only on structural integrity and efficiency. Output: Point-by-point critique.' },
+  { id: 255, category: 'persona', icon: '🧠', title: 'The Logical Mentor', prompt: 'Act as a Stoic Mentor. Constraints: Analyze my current situation [Situation]. Provide advice based strictly on logic, emotional detachment, and focus on controllable variables. Output: Stoic advice framework.' },
+  { id: 256, category: 'system', icon: '🖥️', title: 'Terminal Handoff', prompt: 'Act as a Linux Systems Administrator. Generate a Bash command to display system resource usage (CPU, RAM, Disk). Constraints: Output must be color-coded for readability in a terminal. Output: One-line Bash command.' },
+  { id: 257, category: 'system', icon: '🛡️', title: 'Firewall Policy', prompt: 'Act as a Network Security Engineer. Draft a basic firewall policy for a development server. Constraints: Whitelist SSH, block all external non-essential ports, and log denied attempts. Output: UFW or iptables commands.' }
 ]; 
