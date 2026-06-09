@@ -271,3 +271,24 @@ const prompts = [
   { id: 256, category: 'system', icon: '🖥️', title: 'Terminal Handoff', prompt: 'Act as a Linux Systems Administrator. Generate a Bash command to display system resource usage (CPU, RAM, Disk). Constraints: Output must be color-coded for readability in a terminal. Output: One-line Bash command.' },
   { id: 257, category: 'system', icon: '🛡️', title: 'Firewall Policy', prompt: 'Act as a Network Security Engineer. Draft a basic firewall policy for a development server. Constraints: Whitelist SSH, block all external non-essential ports, and log denied attempts. Output: UFW or iptables commands.' }
 ]; 
+  ,
+  // --- New Gemini Development Prompts ---
+  { id: 258, category: 'gemini-dev', icon: '♊', title: 'Gemini APK Builder (AI Studio)', prompt: 'Act as a Google Gemini expert. Provide a step-by-step guide to build an Android APK from an app created in AI Studio (aistudio.google.com) and integrate it with a GitHub Actions workflow for continuous deployment. Constraints: Focus on best practices for CI/CD, security, and versioning. Output: Markdown guide with code snippets.' },
+  { id: 259, category: 'gemini-dev', icon: '📞', title: 'Gemini Function Calling Example', prompt: 'Act as a Gemini API developer. Generate a Python code snippet demonstrating how to use Gemini\'s function calling feature with a dummy API. Constraints: Include error handling and clear comments. Output: Python code.' },
+  // --- New Web Development Prompts ---
+  { id: 260, category: 'web-dev', icon: '⚛️', title: 'React Component Generator', prompt: 'Act as a React developer. Generate a functional React component for a reusable UI element (e.g., a modal, a dropdown). Constraints: Use TypeScript, Tailwind CSS, and include basic state management with `useState`. Output: React/TypeScript code.' },
+  { id: 261, category: 'web-dev', icon: '🌐', title: 'Node.js API Endpoint', prompt: 'Act as a Node.js backend developer. Create a simple Express.js API endpoint that handles GET and POST requests for a resource. Constraints: Include basic input validation and a mock database interaction. Output: Node.js/Express code.' },
+  // --- New Data Science Prompts ---
+  { id: 262, category: 'data-science', icon: '📊', title: 'Pandas Data Cleaning', prompt: 'Act as a Data Scientist. Provide a Python Pandas script to clean a messy CSV file. Constraints: Handle missing values, remove duplicates, and convert data types. Output: Python Pandas script.' },
+  { id: 263, category: 'data-science', icon: '📈', title: 'Matplotlib Visualization', prompt: 'Act as a Data Analyst. Generate a Python Matplotlib script to create a basic bar chart from a given dataset. Constraints: Include labels, title, and save the plot as a PNG. Output: Python Matplotlib code.' }
+  ,
+  // --- New Gemini Development Prompts ---
+  { id: 258, category: 'gemini-dev', icon: '♊', title: 'Gemini APK Builder (AI Studio)', prompt: 'Act as a Google Gemini expert. Provide a step-by-step guide to build an Android APK from an app created in AI Studio (aistudio.google.com) and integrate it with a GitHub Actions workflow for continuous deployment. Constraints: Focus on best practices for CI/CD, security, and versioning. Output: Markdown guide with code snippets.' },
+  { id: 259, category: 'gemini-dev', icon: '📞', title: 'Gemini Function Calling Example', prompt: 'Act as a Gemini API developer. Generate a Python code snippet demonstrating how to use Gemini\'s function calling feature with a dummy API. Constraints: Include error handling and clear comments. Output: Python code.' },
+  // --- New Web Development Prompts ---
+  { id: 260, category: 'web-dev', icon: '⚛️', title: 'React Component Generator', prompt: 'Act as a React developer. Generate a functional React component for a reusable UI element (e.g., a modal, a dropdown). Constraints: Use TypeScript, Tailwind CSS, and include basic state management with `useState`. Output: React/TypeScript code.' },
+  { id: 261, category: 'web-dev', icon: '🌐', title: 'Node.js API Endpoint', prompt: 'Act as a Node.js backend developer. Create a simple Express.js API endpoint that handles GET and POST requests for a resource. Constraints: Include basic input validation and a mock database interaction. Output: Node.js/Express code.' },
+  // --- New Data Science Prompts ---
+  { id: 262, category: 'data-science', icon: '📊', title: 'Pandas Data Cleaning', prompt: 'Act as a Data Scientist. Provide a Python Pandas script to clean a messy CSV file. Constraints: Handle missing values, remove duplicates, and convert data types. Output: Python Pandas script.' },
+  { id: 263, category: 'data-science', icon: '📈', title: 'Matplotlib Visualization', prompt: 'Act as a Data Analyst. Generate a Python Matplotlib script to create a basic bar chart from a given dataset. Constraints: Include labels, title, and save the plot as a PNG. Output: Python Matplotlib code.' }
+];
