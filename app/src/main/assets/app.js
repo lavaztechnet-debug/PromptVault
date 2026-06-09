@@ -1,37 +1,34 @@
-/* --- FILE: app.js --- */
+/**
+ * Lava's Prompt Vault - Application Logic
+ */
 
 // ===== STATE MANAGEMENT =====
+// Note: 'prompts' is loaded from prompts.js
 let allPrompts = [...prompts];
-let currentFilter = 'all';
 let customPrompts = [];
+let currentFilter = 'all';
 
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
-  loadCustomPrompts(); // Load saved prompts first
-  initializeApp();
-});
-
-function initializeApp() {
+  loadCustomPrompts();
   renderPrompts();
   setupEventListeners();
   renderCustomPromptsList();
-}
-
-// ===== PERSISTENCE (Saving/Loading) =====
-function saveCustomPrompts() {
-  localStorage.setItem('lavaCustomPrompts', JSON.stringify(customPrompts));
-}
+});
 
 function loadCustomPrompts() {
   const saved = localStorage.getItem('lavaCustomPrompts');
   if (saved) {
     customPrompts = JSON.parse(saved);
-    // Merge saved custom prompts with the default list
     allPrompts = [...prompts, ...customPrompts];
   }
 }
 
-// ===== EVENT LISTENERS =====
+function saveCustomPrompts() {
+  localStorage.setItem('lavaCustomPrompts', JSON.stringify(customPrompts));
+}
+
+// ===== SETUP =====
 function setupEventListeners() {
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', (e) => switchTab(e.target.dataset.tab));
@@ -39,7 +36,7 @@ function setupEventListeners() {
   
   const searchInput = document.getElementById('searchInput');
   if (searchInput) {
-    searchInput.addEventListener('keyup', debounce(renderPrompts, 300));
+    searchInput.addEventListener('input', (e) => renderPrompts(e.target.value));
   }
   
   document.querySelectorAll('.cat-badge').forEach(badge => {
@@ -47,46 +44,31 @@ function setupEventListeners() {
   });
 }
 
-function debounce(func, delay) {
-  let timeoutId;
-  return function (...args) {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => func.apply(this, args), delay);
-  };
-}
-
 // ===== RENDER FUNCTIONS =====
-function renderPrompts() {
+function renderPrompts(filterQuery = '') {
   const grid = document.getElementById('promptGrid');
   if (!grid) return;
-  grid.innerHTML = '';
   
-  const searchInput = document.getElementById('searchInput');
-  const searchValue = searchInput ? searchInput.value.toLowerCase() : '';
+  grid.innerHTML = '';
+  const query = filterQuery.toLowerCase();
 
   const filtered = allPrompts.filter(p => {
-    const matchesSearch = p.title.toLowerCase().includes(searchValue) || p.prompt.toLowerCase().includes(searchValue);
+    const matchesSearch = p.title.toLowerCase().includes(query) || p.prompt.toLowerCase().includes(query);
     const matchesCategory = currentFilter === 'all' || p.category === currentFilter;
     return matchesSearch && matchesCategory;
   });
 
-  filtered.forEach((p, index) => grid.appendChild(createPromptCard(p, index + 1)));
-}
-
-function createPromptCard(prompt, displayIndex) {
-  const card = document.createElement('div');
-  card.className = `prompt-card cat-${prompt.category}`;
-  card.innerHTML = `
-    <div class="prompt-card-header">
-      <div class="prompt-number">${displayIndex}</div>
-      <span class="prompt-icon">${prompt.icon}</span>
-      <h3>${escapeHtml(prompt.title)}</h3>
-    </div>
-    <p>${escapeHtml(prompt.prompt)}</p>
-    <div class="button-group">
-      <button onclick="copyPrompt('${escapeForJsString(prompt.prompt)}')" class="neo-btn" style="flex:1;">📋 Copy</button>
-    </div>`;
-  return card;
+  filtered.forEach((p, index) => {
+    const card = document.createElement('div');
+    card.className = `prompt-card cat-${p.category}`;
+    card.innerHTML = `
+      <h3 class="text-lg font-bold text-white mb-2">${index + 1}. ${p.icon} ${p.title}</h3>
+      <p class="text-sm text-gray-300 mb-4 leading-relaxed">${p.prompt}</p>
+      <div class="flex gap-2 mt-auto">
+        <button onclick="copyPrompt('${escapeForJsString(p.prompt)}')" class="neo-btn flex-1 text-xs">Copy</button>
+      </div>`;
+    grid.appendChild(card);
+  });
 }
 
 function renderCustomPromptsList() {
@@ -111,67 +93,49 @@ function renderCustomPromptsList() {
   `).join('');
 }
 
-// ===== PROMPT MANAGEMENT =====
-function addCustomPrompt() {
-  const title = document.getElementById('customTitle').value.trim();
-  const prompt = document.getElementById('customPrompt').value.trim();
-  const category = document.getElementById('customCategory').value;
-  const icon = document.getElementById('customIcon').value.trim() || '✨';
-
-  if (!title || !prompt) return showToast('Please fill in title and prompt');
-
-  const newPrompt = { id: Date.now(), category, icon, title, prompt };
-  customPrompts.push(newPrompt);
-  allPrompts.push(newPrompt);
-  
-  saveCustomPrompts(); // Persistent save
-  renderCustomPromptsList();
-  renderPrompts();
-  clearCustomForm();
-  showToast('✅ Saved to storage!');
+// ===== BUTTON ACTIONS =====
+function copyPrompt(text) {
+  navigator.clipboard.writeText(text);
+  showToast('Prompt Copied!');
 }
 
-function deleteCustomPrompt(index) {
-  const promptToDelete = customPrompts[index];
-  customPrompts.splice(index, 1);
-  allPrompts = allPrompts.filter(p => p.id !== promptToDelete.id);
-  
-  saveCustomPrompts(); // Persistent update
-  renderCustomPromptsList();
-  renderPrompts();
-  showToast('❌ Deleted');
+function copyAll() {
+  const filtered = allPrompts.filter(p => currentFilter === 'all' || p.category === currentFilter);
+  const text = filtered.map((p, i) => `${i + 1}. ${p.title}\n${p.prompt}`).join('\n\n---\n\n');
+  navigator.clipboard.writeText(text);
+  showToast(`${filtered.length} Prompts Copied!`);
 }
 
-// ===== EXPORTING =====
+function exportGoogleDocs() {
+    let htmlContent = `<html><head><meta charset="UTF-8"></head><body><h1>Lava's Prompt Vault</h1>` + allPrompts.map((p, i) => `
+        <div style="margin-bottom: 20px;">
+            <h3>${i + 1}. ${p.title} (${p.category})</h3>
+            <p>${p.prompt}</p>
+        </div>`).join('') + `</body></html>`;
+    
+    triggerDownload(htmlContent, 'Lava_Vault.html', 'text/html');
+    showToast('Exporting to Docs...');
+}
+
+function exportSamsungNotes() {
+    const text = allPrompts.map((p, i) => `# ${i + 1}. ${p.title}\nCategory: ${p.category}\nPrompt: ${p.prompt}\n\n---\n`).join('\n');
+    triggerDownload(text, 'Lava_Vault.txt', 'text/plain');
+    showToast('Exporting to Notes...');
+}
+
 function triggerDownload(content, filename, type) {
     const blob = new Blob([content], { type: type });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = filename;
-    a.style.display = 'none';
+    a.target = '_blank';
     document.body.appendChild(a);
     a.click();
-    setTimeout(() => { document.body.removeChild(a); window.URL.revokeObjectURL(url); }, 100);
+    document.body.removeChild(a);
 }
 
-function exportGoogleDocs() {
-    let content = `<html><body><h1>Lava's Prompt Vault</h1>` + allPrompts.map((p, i) => `<h3>${i+1}. ${p.title} (${p.category})</h3><p>${p.prompt}</p>`).join('<br>') + `</body></html>`;
-    triggerDownload(content, 'Lava_Vault.html', 'text/html');
-}
-
-function exportSamsungNotes() {
-    const text = allPrompts.map((p, i) => `# ${i+1}. ${p.title}\n${p.prompt}\n\n---\n`).join('\n');
-    triggerDownload(text, 'Lava_Vault.txt', 'text/plain');
-}
-
-// ===== UTILITIES & UI =====
-function clearCustomForm() {
-  document.getElementById('customTitle').value = '';
-  document.getElementById('customPrompt').value = '';
-  document.getElementById('customIcon').value = '✨';
-}
-
+// ===== UTILS =====
 function switchTab(tabName) {
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -180,11 +144,18 @@ function switchTab(tabName) {
   if (tabName === 'vault') renderPrompts();
 }
 
-function showToast(message) {
-  const toast = document.getElementById('toast');
-  toast.innerText = message;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2000);
+function filterByCategory(category) {
+  currentFilter = category;
+  document.querySelectorAll('.cat-badge').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.cat-badge[data-category="${category}"]`)?.classList.add('active');
+  renderPrompts();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.innerText = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
 }
 
 function escapeHtml(text) {
