@@ -135,19 +135,16 @@ function toggleFavorite(id) {
 
 // ===== VARIABLE MODAL & ACTION LOGIC =====
 function handlePromptAction(promptText, action) {
-  // Regex to find things inside [Brackets]
   const variableRegex = /\[(.*?)\]/g;
   const matches = [...promptText.matchAll(variableRegex)].map(m => m[1]);
   
-  currentVariables = [...new Set(matches)]; // Get unique variables
+  currentVariables = [...new Set(matches)];
 
   if (currentVariables.length > 0) {
-    // Open Modal to fill variables
     currentPromptTemplate = promptText;
     currentPromptAction = action;
     openModal();
   } else {
-    // No variables, execute directly
     executeFinalAction(promptText, action);
   }
 }
@@ -162,7 +159,6 @@ function openModal() {
   `).join('');
   
   document.getElementById('variableModal').classList.add('active');
-  // Auto-focus first input
   if(document.getElementById('var_0')) document.getElementById('var_0').focus();
 }
 
@@ -177,8 +173,7 @@ function executeModalAction() {
   let finalizedPrompt = currentPromptTemplate;
   
   currentVariables.forEach((v, i) => {
-    const inputVal = document.getElementById(`var_${i}`).value || `[${v}]`; // Fallback to bracket if empty
-    // Global replace for this variable
+    const inputVal = document.getElementById(`var_${i}`).value || `[${v}]`; 
     finalizedPrompt = finalizedPrompt.split(`[${v}]`).join(inputVal); 
   });
 
@@ -207,15 +202,18 @@ function executeFinalAction(text, action) {
 
 // Helper function to bypass basic WebView restrictions
 function forceExternalLink(url) {
+  // Method 1: The _system target tells APK wrappers to escape the WebView
   const link = document.createElement('a');
   link.href = url;
-  link.target = '_blank'; // Tells the APK wrapper this should be an external window
-  link.rel = 'noopener noreferrer';
-  
-  // Append, click, and remove the invisible link
+  link.target = '_system'; 
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+  
+  // Method 2: Fallback for environments that prefer window.open
+  setTimeout(() => {
+    window.open(url, '_system');
+  }, 100);
 }
 
 // ===== CUSTOM PROMPT MANAGEMENT =====
@@ -251,12 +249,9 @@ function addCustomPrompt() {
     return;
   }
 
-  // Create highly unique ID to prevent conflicts with defaults
   const newPrompt = { id: Date.now(), category, icon, title, prompt: promptText };
-  
   customPrompts.push(newPrompt);
   allPrompts.push(newPrompt);
-  
   saveData();
   renderCustomPromptsList();
   renderPrompts();
@@ -268,10 +263,7 @@ function deleteCustomPrompt(index) {
   const promptToDelete = customPrompts[index];
   customPrompts.splice(index, 1);
   allPrompts = allPrompts.filter(p => p.id !== promptToDelete.id);
-  
-  // Remove from favorites if it was favorited
   favoritePrompts = favoritePrompts.filter(id => id !== promptToDelete.id);
-  
   saveData();
   renderCustomPromptsList();
   renderPrompts(document.getElementById('searchInput')?.value);
@@ -303,19 +295,11 @@ function importData(event) {
   reader.onload = function(e) {
     try {
       const importedData = JSON.parse(e.target.result);
+      if (importedData.customPrompts) customPrompts = importedData.customPrompts;
+      if (importedData.favoritePrompts) favoritePrompts = importedData.favoritePrompts;
       
-      if (importedData.customPrompts) {
-        // Merge without duplicating IDs (simple merge for now)
-        customPrompts = importedData.customPrompts;
-      }
-      if (importedData.favoritePrompts) {
-        favoritePrompts = importedData.favoritePrompts;
-      }
-      
-      // Rebuild allPrompts
       allPrompts = [...prompts, ...customPrompts];
       saveData();
-      
       renderCustomPromptsList();
       renderPrompts();
       showToast('📤 Data restored successfully!');
@@ -326,7 +310,6 @@ function importData(event) {
     }
   };
   reader.readAsText(file);
-  // Reset input so the same file can be selected again if needed
   event.target.value = '';
 }
 
