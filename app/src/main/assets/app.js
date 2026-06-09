@@ -1,16 +1,13 @@
-/**
- * Lava's Prompt Vault - Application Logic
- * Handles rendering, filtering, searching, and user interactions
- */
+/* --- FILE: app.js --- */
 
 // ===== STATE MANAGEMENT =====
-// Note: 'prompts' is defined in prompts.js
 let allPrompts = [...prompts];
 let currentFilter = 'all';
 let customPrompts = [];
 
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
+  loadCustomPrompts(); // Load saved prompts first
   initializeApp();
 });
 
@@ -20,12 +17,24 @@ function initializeApp() {
   renderCustomPromptsList();
 }
 
-// ===== EVENT LISTENER SETUP =====
+// ===== PERSISTENCE (Saving/Loading) =====
+function saveCustomPrompts() {
+  localStorage.setItem('lavaCustomPrompts', JSON.stringify(customPrompts));
+}
+
+function loadCustomPrompts() {
+  const saved = localStorage.getItem('lavaCustomPrompts');
+  if (saved) {
+    customPrompts = JSON.parse(saved);
+    // Merge saved custom prompts with the default list
+    allPrompts = [...prompts, ...customPrompts];
+  }
+}
+
+// ===== EVENT LISTENERS =====
 function setupEventListeners() {
   document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      switchTab(e.target.dataset.tab);
-    });
+    btn.addEventListener('click', (e) => switchTab(e.target.dataset.tab));
   });
   
   const searchInput = document.getElementById('searchInput');
@@ -34,9 +43,7 @@ function setupEventListeners() {
   }
   
   document.querySelectorAll('.cat-badge').forEach(badge => {
-    badge.addEventListener('click', (e) => {
-      filterByCategory(e.target.dataset.category);
-    });
+    badge.addEventListener('click', (e) => filterByCategory(e.target.dataset.category));
   });
 }
 
@@ -49,32 +56,21 @@ function debounce(func, delay) {
 }
 
 // ===== RENDER FUNCTIONS =====
-
 function renderPrompts() {
   const grid = document.getElementById('promptGrid');
   if (!grid) return;
-  
   grid.innerHTML = '';
+  
   const searchInput = document.getElementById('searchInput');
   const searchValue = searchInput ? searchInput.value.toLowerCase() : '';
 
-  const filteredPrompts = allPrompts.filter(p => {
-    const matchesSearch = 
-      p.title.toLowerCase().includes(searchValue) || 
-      p.prompt.toLowerCase().includes(searchValue);
+  const filtered = allPrompts.filter(p => {
+    const matchesSearch = p.title.toLowerCase().includes(searchValue) || p.prompt.toLowerCase().includes(searchValue);
     const matchesCategory = currentFilter === 'all' || p.category === currentFilter;
     return matchesSearch && matchesCategory;
   });
 
-  if (filteredPrompts.length === 0) {
-    grid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--muted); font-size: 0.95rem; grid-column: 1/-1;">No prompts found</div>';
-    return;
-  }
-
-  filteredPrompts.forEach((p, index) => {
-    const card = createPromptCard(p, index + 1);
-    grid.appendChild(card);
-  });
+  filtered.forEach((p, index) => grid.appendChild(createPromptCard(p, index + 1)));
 }
 
 function createPromptCard(prompt, displayIndex) {
@@ -89,8 +85,7 @@ function createPromptCard(prompt, displayIndex) {
     <p>${escapeHtml(prompt.prompt)}</p>
     <div class="button-group">
       <button onclick="copyPrompt('${escapeForJsString(prompt.prompt)}')" class="neo-btn" style="flex:1;">📋 Copy</button>
-    </div>
-  `;
+    </div>`;
   return card;
 }
 
@@ -116,42 +111,7 @@ function renderCustomPromptsList() {
   `).join('');
 }
 
-// ===== FILTERING & SEARCHING =====
-
-function filterByCategory(category) {
-  currentFilter = category;
-  document.querySelectorAll('.cat-badge').forEach(badge => badge.classList.remove('active'));
-  
-  if (category === 'all') {
-    document.querySelector('[data-category="all"]').classList.add('active');
-  } else {
-    document.querySelector(`[data-category="${category}"]`).classList.add('active');
-  }
-  renderPrompts();
-}
-
-// ===== CLIPBOARD & SHARING =====
-
-function copyPrompt(text) {
-  navigator.clipboard.writeText(text).then(() => showToast('Prompt Copied!'));
-}
-
-function copyAll() {
-  const filteredPrompts = allPrompts.filter(p => currentFilter === 'all' || p.category === currentFilter);
-  const text = filteredPrompts.map(p => `${p.title}\n${p.prompt}`).join('\n\n---\n\n');
-  navigator.clipboard.writeText(text).then(() => showToast(`${filteredPrompts.length} Prompts Copied!`));
-}
-
-function launchGeminiApp() {
-  const text = document.getElementById('customPrompt')?.value || '';
-  if (!text) return showToast('No prompt to send');
-  
-  const encodedText = encodeURIComponent(text);
-  window.location.href = `intent://send?text=${encodedText}#Intent;action=android.intent.action.SEND;type=text/plain;package=com.google.android.apps.bard;end`;
-}
-
-// ===== CUSTOM PROMPT MANAGEMENT =====
-
+// ===== PROMPT MANAGEMENT =====
 function addCustomPrompt() {
   const title = document.getElementById('customTitle').value.trim();
   const prompt = document.getElementById('customPrompt').value.trim();
@@ -160,32 +120,57 @@ function addCustomPrompt() {
 
   if (!title || !prompt) return showToast('Please fill in title and prompt');
 
-  const customPrompt = { id: Date.now(), category, icon, title, prompt };
-  customPrompts.push(customPrompt);
-  allPrompts.push(customPrompt);
-
+  const newPrompt = { id: Date.now(), category, icon, title, prompt };
+  customPrompts.push(newPrompt);
+  allPrompts.push(newPrompt);
+  
+  saveCustomPrompts(); // Persistent save
   renderCustomPromptsList();
+  renderPrompts();
   clearCustomForm();
-  showToast('✅ Prompt added successfully!');
+  showToast('✅ Saved to storage!');
 }
 
 function deleteCustomPrompt(index) {
   const promptToDelete = customPrompts[index];
   customPrompts.splice(index, 1);
   allPrompts = allPrompts.filter(p => p.id !== promptToDelete.id);
+  
+  saveCustomPrompts(); // Persistent update
   renderCustomPromptsList();
   renderPrompts();
-  showToast('❌ Prompt deleted');
+  showToast('❌ Deleted');
 }
 
+// ===== EXPORTING =====
+function triggerDownload(content, filename, type) {
+    const blob = new Blob([content], { type: type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { document.body.removeChild(a); window.URL.revokeObjectURL(url); }, 100);
+}
+
+function exportGoogleDocs() {
+    let content = `<html><body><h1>Lava's Prompt Vault</h1>` + allPrompts.map((p, i) => `<h3>${i+1}. ${p.title} (${p.category})</h3><p>${p.prompt}</p>`).join('<br>') + `</body></html>`;
+    triggerDownload(content, 'Lava_Vault.html', 'text/html');
+}
+
+function exportSamsungNotes() {
+    const text = allPrompts.map((p, i) => `# ${i+1}. ${p.title}\n${p.prompt}\n\n---\n`).join('\n');
+    triggerDownload(text, 'Lava_Vault.txt', 'text/plain');
+}
+
+// ===== UTILITIES & UI =====
 function clearCustomForm() {
   document.getElementById('customTitle').value = '';
   document.getElementById('customPrompt').value = '';
-  document.getElementById('customCategory').value = 'app';
   document.getElementById('customIcon').value = '✨';
 }
-
-// ===== TAB SWITCHING =====
 
 function switchTab(tabName) {
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -195,53 +180,12 @@ function switchTab(tabName) {
   if (tabName === 'vault') renderPrompts();
 }
 
-// ===== NOTIFICATIONS =====
-
 function showToast(message) {
   const toast = document.getElementById('toast');
-  if (!toast) return;
   toast.innerText = message;
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 2000);
 }
-
-// ===== EXPORT FUNCTIONS =====
-
-function exportGoogleDocs() {
-    let htmlContent = `<html><head><meta charset="UTF-8"></head><body><h1>Lava's Prompt Vault</h1>` + allPrompts.map((p, i) => `
-        <div style="margin-bottom: 20px;">
-            <h3>${i + 1}. ${p.title} (${p.category})</h3>
-            <p>${p.prompt}</p>
-        </div>`).join('') + `</body></html>`;
-    
-    const blob = new Blob([htmlContent], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'Lava_Prompt_Vault.html';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    showToast('Exported to HTML (Open in Google Docs)');
-}
-
-function exportSamsungNotes() {
-    const text = allPrompts.map((p, i) => 
-        `# ${i + 1}. ${p.title}\nCategory: ${p.category}\nPrompt: ${p.prompt}\n\n---\n`
-    ).join('\n');
-    
-    const blob = new Blob([text], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'Lava_Prompt_Vault.txt';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    showToast('Exported to Text (Open in Samsung Notes)');
-}
-
-// ===== UTILITY FUNCTIONS =====
 
 function escapeHtml(text) {
   const div = document.createElement('div');
@@ -250,10 +194,5 @@ function escapeHtml(text) {
 }
 
 function escapeForJsString(text) {
-  return text
-    .replace(/\\/g, '\\\\')
-    .replace(/'/g, "\\'")
-    .replace(/"/g, '\\"')
-    .replace(/\n/g, '\\n')
-    .replace(/\r/g, '\\r');
+  return text.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n');
 }
