@@ -181,7 +181,6 @@ function executeModalAction() {
   executeFinalAction(finalizedPrompt, currentPromptAction);
 }
 
-// ===== THE FIX: HANDOFF UI =====
 function executeFinalAction(text, action) {
   // Always copy to clipboard as a reliable mobile fallback
   navigator.clipboard.writeText(text).catch(err => console.log('Clipboard fallback failed'));
@@ -203,9 +202,12 @@ function showHandoffModal(url, aiName) {
   const modal = document.getElementById('handoffModal');
   const link = document.getElementById('handoffLink');
   
-  // Attach the URL directly to the physical <a> tag
+  // Update the link text and href dynamically
   link.href = url;
   link.innerText = `🌍 Open ${aiName}`;
+  
+  // Style the button
+  link.style.color = '#00cec9'; 
   
   modal.classList.add('active');
 }
