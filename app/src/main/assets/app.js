@@ -15,32 +15,24 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initializeApp() {
-  // Render initial prompts
   renderPrompts();
-  
-  // Set up event listeners
   setupEventListeners();
-  
-  // Render custom prompts list
   renderCustomPromptsList();
 }
 
 // ===== EVENT LISTENER SETUP =====
 function setupEventListeners() {
-  // Tab switching
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       switchTab(e.target.dataset.tab);
     });
   });
   
-  // Search functionality
   const searchInput = document.getElementById('searchInput');
   if (searchInput) {
     searchInput.addEventListener('keyup', debounce(renderPrompts, 300));
   }
   
-  // Category filtering
   document.querySelectorAll('.cat-badge').forEach(badge => {
     badge.addEventListener('click', (e) => {
       filterByCategory(e.target.dataset.category);
@@ -48,7 +40,6 @@ function setupEventListeners() {
   });
 }
 
-// ===== DEBOUNCE UTILITY =====
 function debounce(func, delay) {
   let timeoutId;
   return function (...args) {
@@ -59,9 +50,6 @@ function debounce(func, delay) {
 
 // ===== RENDER FUNCTIONS =====
 
-/**
- * Renders the prompt grid based on current filters and search
- */
 function renderPrompts() {
   const grid = document.getElementById('promptGrid');
   if (!grid) return;
@@ -70,7 +58,6 @@ function renderPrompts() {
   const searchInput = document.getElementById('searchInput');
   const searchValue = searchInput ? searchInput.value.toLowerCase() : '';
 
-  // Filter prompts based on search and category
   const filteredPrompts = allPrompts.filter(p => {
     const matchesSearch = 
       p.title.toLowerCase().includes(searchValue) || 
@@ -79,7 +66,6 @@ function renderPrompts() {
     return matchesSearch && matchesCategory;
   });
 
-  // Render each prompt card with sequential numbering
   if (filteredPrompts.length === 0) {
     grid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--muted); font-size: 0.95rem; grid-column: 1/-1;">No prompts found</div>';
     return;
@@ -91,12 +77,6 @@ function renderPrompts() {
   });
 }
 
-/**
- * Creates a prompt card DOM element
- * @param {Object} prompt - Prompt object
- * @param {Number} displayIndex - Number to display on the card
- * @returns {HTMLElement} Prompt card element
- */
 function createPromptCard(prompt, displayIndex) {
   const card = document.createElement('div');
   card.className = `prompt-card cat-${prompt.category}`;
@@ -114,9 +94,6 @@ function createPromptCard(prompt, displayIndex) {
   return card;
 }
 
-/**
- * Renders the custom prompts list
- */
 function renderCustomPromptsList() {
   const list = document.getElementById('customPromptsList');
   if (!list) return;
@@ -140,133 +117,65 @@ function renderCustomPromptsList() {
 
 // ===== FILTERING & SEARCHING =====
 
-/**
- * Filters prompts by category
- * @param {String} category - Category to filter by
- */
 function filterByCategory(category) {
   currentFilter = category;
-  
-  // Update active badge
-  document.querySelectorAll('.cat-badge').forEach(badge => {
-    badge.classList.remove('active');
-  });
+  document.querySelectorAll('.cat-badge').forEach(badge => badge.classList.remove('active'));
   
   if (category === 'all') {
     document.querySelector('[data-category="all"]').classList.add('active');
   } else {
     document.querySelector(`[data-category="${category}"]`).classList.add('active');
   }
-  
   renderPrompts();
 }
 
 // ===== CLIPBOARD & SHARING =====
 
-/**
- * Copies a single prompt to clipboard
- * @param {String} text - Text to copy
- */
 function copyPrompt(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    showToast('Prompt Copied!');
-  }).catch(() => {
-    showToast('Failed to copy');
-  });
+  navigator.clipboard.writeText(text).then(() => showToast('Prompt Copied!'));
 }
 
-/**
- * Copies all filtered prompts to clipboard
- */
 function copyAll() {
-  const filteredPrompts = allPrompts.filter(p => 
-    currentFilter === 'all' || p.category === currentFilter
-  );
-  
-  const text = filteredPrompts
-    .map(p => `${p.title}\n${p.prompt}`)
-    .join('\n\n---\n\n');
-  
-  navigator.clipboard.writeText(text).then(() => {
-    showToast(`${filteredPrompts.length} Prompts Copied!`);
-  }).catch(() => {
-    showToast('Failed to copy');
-  });
+  const filteredPrompts = allPrompts.filter(p => currentFilter === 'all' || p.category === currentFilter);
+  const text = filteredPrompts.map(p => `${p.title}\n${p.prompt}`).join('\n\n---\n\n');
+  navigator.clipboard.writeText(text).then(() => showToast(`${filteredPrompts.length} Prompts Copied!`));
 }
 
-/**
- * Launches Gemini app with intent (Android only)
- */
 function launchGeminiApp() {
   const text = document.getElementById('customPrompt')?.value || '';
-  if (!text) {
-    showToast('No prompt to send');
-    return;
-  }
-  
-  const encodedText = encodeURIComponent(text);
-  window.location.href = `intent://send?text=${encodedText}#Intent;action=android.intent.action.SEND;type=text/plain;package=com.google.android.apps.bard;end`;
+  if (!text) return showToast('No prompt to send');
+  window.location.href = `intent://send?text=${encodeURIComponent(text)}#Intent;action=android.intent.action.SEND;type=text/plain;package=com.google.android.apps.bard;end`;
 }
 
 // ===== CUSTOM PROMPT MANAGEMENT =====
 
-/**
- * Adds a custom prompt to the vault
- */
 function addCustomPrompt() {
   const title = document.getElementById('customTitle').value.trim();
   const prompt = document.getElementById('customPrompt').value.trim();
   const category = document.getElementById('customCategory').value;
   const icon = document.getElementById('customIcon').value.trim() || '✨';
 
-  // Validation
-  if (!title || !prompt) {
-    showToast('Please fill in title and prompt');
-    return;
-  }
+  if (!title || !prompt) return showToast('Please fill in title and prompt');
 
-  // Create custom prompt object
-  const customPrompt = {
-    id: Date.now(),
-    category,
-    icon,
-    title,
-    prompt
-  };
-
-  // Add to custom prompts and main array
+  const customPrompt = { id: Date.now(), category, icon, title, prompt };
   customPrompts.push(customPrompt);
   allPrompts.push(customPrompt);
   displayNumber++;
 
-  // Update UI
   renderCustomPromptsList();
   clearCustomForm();
   showToast('✅ Prompt added successfully!');
 }
 
-/**
- * Deletes a custom prompt
- * @param {Number} index - Index of custom prompt to delete
- */
 function deleteCustomPrompt(index) {
   const promptToDelete = customPrompts[index];
-  
-  // Remove from custom prompts
   customPrompts.splice(index, 1);
-  
-  // Remove from all prompts
   allPrompts = allPrompts.filter(p => p.id !== promptToDelete.id);
-  
-  // Update UI
   renderCustomPromptsList();
   renderPrompts();
   showToast('❌ Prompt deleted');
 }
 
-/**
- * Clears the custom prompt form
- */
 function clearCustomForm() {
   document.getElementById('customTitle').value = '';
   document.getElementById('customPrompt').value = '';
@@ -276,90 +185,68 @@ function clearCustomForm() {
 
 // ===== TAB SWITCHING =====
 
-/**
- * Switches between tabs
- * @param {String} tabName - Name of tab to show
- */
 function switchTab(tabName) {
-  // Hide all tab contents
-  document.querySelectorAll('.tab-content').forEach(content => {
-    content.classList.remove('active');
-  });
-  
-  // Remove active class from all buttons
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.classList.remove('active');
-  });
-  
-  // Show selected tab
-  const tabElement = document.getElementById(tabName);
-  if (tabElement) {
-    tabElement.classList.add('active');
-  }
-  
-  // Activate corresponding button
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabName).classList.add('active');
   document.querySelector(`[data-tab="${tabName}"]`)?.classList.add('active');
-  
-  // Refresh prompts when switching to vault
-  if (tabName === 'vault') {
-    renderPrompts();
-  }
+  if (tabName === 'vault') renderPrompts();
 }
 
 // ===== NOTIFICATIONS =====
 
-/**
- * Shows a toast notification
- * @param {String} message - Message to display
- */
 function showToast(message) {
   const toast = document.getElementById('toast');
   if (!toast) return;
-  
   toast.innerText = message;
   toast.classList.add('show');
-  
-  setTimeout(() => {
-    toast.classList.remove('show');
-  }, 2000);
+  setTimeout(() => toast.classList.remove('show'), 2000);
 }
 
-// ===== EXPORT FUNCTIONS (PLACEHOLDERS) =====
+// ===== EXPORT FUNCTIONS =====
 
-/**
- * Exports prompts to Google Docs
- */
 function exportGoogleDocs() {
-  showToast('📘 Google Docs export coming soon!');
-  // Implementation: Generate formatted text and open Google Docs
+    let htmlContent = `<html><body><h1>Lava's Prompt Vault</h1>` + allPrompts.map((p, i) => `
+        <div style="margin-bottom: 20px;">
+            <h3>${i + 1}. ${p.title} (${p.category})</h3>
+            <p>${p.prompt}</p>
+        </div>`).join('') + `</body></html>`;
+    
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Lava_Prompt_Vault.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast('Exported to HTML (Open in Google Docs)');
 }
 
-/**
- * Exports prompts to Samsung Notes
- */
 function exportSamsungNotes() {
-  showToast('🧡 Samsung Notes export coming soon!');
-  // Implementation: Format for Samsung Notes app
+    const text = allPrompts.map((p, i) => 
+        `# ${i + 1}. ${p.title}\nCategory: ${p.category}\nPrompt: ${p.prompt}\n\n---\n`
+    ).join('\n');
+    
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Lava_Prompt_Vault.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast('Exported to Text (Open in Samsung Notes)');
 }
 
 // ===== UTILITY FUNCTIONS =====
 
-/**
- * Escapes HTML special characters
- * @param {String} text - Text to escape
- * @returns {String} Escaped text
- */
 function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
 }
 
-/**
- * Escapes text for use in JavaScript strings
- * @param {String} text - Text to escape
- * @returns {String} Escaped text
- */
 function escapeForJsString(text) {
   return text
     .replace(/\\/g, '\\\\')
