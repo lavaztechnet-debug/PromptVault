@@ -181,8 +181,8 @@ function executeModalAction() {
   executeFinalAction(finalizedPrompt, currentPromptAction);
 }
 
+// ===== FIX: EXTERNAL BROWSER LAUNCHER =====
 function executeFinalAction(text, action) {
-  // Always copy to clipboard as a reliable mobile fallback
   navigator.clipboard.writeText(text).catch(err => console.log('Clipboard fallback failed'));
 
   if (action === 'copy') {
@@ -202,11 +202,8 @@ function showHandoffModal(url, aiName) {
   const modal = document.getElementById('handoffModal');
   const link = document.getElementById('handoffLink');
   
-  // Update the link text and href dynamically
   link.href = url;
   link.innerText = `🌍 Open ${aiName}`;
-  
-  // Style the button
   link.style.color = '#00cec9'; 
   
   modal.classList.add('active');
