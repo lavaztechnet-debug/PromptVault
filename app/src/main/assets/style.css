@@ -74,6 +74,7 @@ p { color: var(--text-muted); }
   margin-bottom: 24px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
+  position: relative;
 }
 
 .prompt-card:hover {
@@ -81,23 +82,24 @@ p { color: var(--text-muted); }
   box-shadow: 22px 22px 40px var(--shadow-dark), -22px -22px 40px var(--shadow-light);
 }
 
-.prompt-card { display: flex; flex-direction: column; position: relative; }
+.prompt-card { display: flex; flex-direction: column; }
 
-/* Sequential Numbering Style */
+/* Sequential Numbering Style - Moved inside to avoid clipping */
 .prompt-number {
   position: absolute;
-  top: -10px;
-  left: -10px;
+  top: 15px;
+  left: 15px;
   background: var(--accent-color);
   color: white;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   box-shadow: 4px 4px 10px rgba(0,0,0,0.2);
   z-index: 10;
 }
@@ -107,6 +109,7 @@ p { color: var(--text-muted); }
   align-items: center; 
   gap: 15px; 
   margin-bottom: 20px; 
+  margin-top: 15px; /* Added space for the number */
   position: relative;
 }
 
