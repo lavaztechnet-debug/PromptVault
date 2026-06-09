@@ -3,72 +3,90 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#1a1a1a">
-  <meta name="description" content="Lava's Prompt Vault - A curated collection of AI prompts for productivity and creativity">
+  <meta name="theme-color" content="#e0e5ec" id="themeColorMeta">
+  <meta name="description" content="Lava's Prompt Vault">
   <title>Lava's Prompt Vault</title>
   
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-  
-  <!-- Custom Styles -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <!-- Toast Notification -->
-  <div id="toast">Copied to Clipboard!</div>
+  <div id="toast">Action Successful!</div>
+
+  <!-- Variable Fill-In Modal -->
+  <div id="variableModal" class="modal-overlay">
+    <div class="neo-container modal-content">
+      <h3 style="margin-bottom: 12px; font-size: 1.2rem;">Fill in Variables</h3>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+        Customize this prompt before using it:
+      </p>
+      <div id="variableInputs" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;"></div>
+      <div class="button-group">
+        <button onclick="executeModalAction()" class="neo-btn primary" style="flex: 1;">🚀 Run</button>
+        <button onclick="closeModal()" class="neo-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
   
-  <!-- Main Container -->
   <div class="max-w-2xl mx-auto">
-    <!-- Header -->
-    <header class="text-center my-8">
-      <h1 class="text-4xl font-black mb-6 text-white tracking-tight">Lava's Prompt Vault</h1>
-      <div class="flex flex-wrap gap-2 justify-center">
-        <button onclick="copyAll()" class="neo-btn">📋 Copy All</button>
-        <button onclick="window.print()" class="neo-btn">🖨️ Print</button>
+    <!-- Header with Theme Toggle -->
+    <header class="text-center my-8" style="position: relative;">
+      <button onclick="toggleTheme()" class="neo-btn" style="position: absolute; right: 0; top: 0; padding: 10px; border-radius: 50%;" aria-label="Toggle Theme" id="themeToggleBtn">🌙</button>
+      <h1 class="text-4xl mb-6 tracking-tight">Lava's Prompt Vault</h1>
+      
+      <div class="tab-nav">
+        <button class="tab-btn active" data-tab="vault">📚 Vault</button>
+        <button class="tab-btn" data-tab="create">✏️ Create</button>
       </div>
     </header>
 
     <!-- Vault Tab Content -->
     <div id="vault" class="tab-content active">
-      <!-- Search Input -->
-      <input type="text" id="searchInput" class="neo-inset" placeholder="🔍 Search prompts..." style="margin-bottom: 12px; width: 100%;">
+      <input type="text" id="searchInput" class="neo-inset" placeholder="🔍 Search prompts..." style="margin-bottom: 16px; width: 100%;">
       
       <!-- Category Filter -->
       <div class="category-filter">
-        <span class="cat-badge app active" data-category="app">App</span>
-        <span class="cat-badge android" data-category="android">Android</span>
-        <span class="cat-badge prompt" data-category="prompt">Prompt</span>
-        <span class="cat-badge document" data-category="document">Document</span>
-        <span class="cat-badge tool" data-category="tool">Tool</span>
-        <span class="cat-badge image-enhancing" data-category="image-enhancing">Visual</span>
-        <span class="cat-badge" data-category="all" style="color: #a0a0a0; border-color: #a0a0a0;">All</span>
+        <button class="cat-badge active" data-category="all">All</button>
+        <button class="cat-badge" data-category="favorites" style="color: #ff4757;">❤️ Favorites</button>
+        <button class="cat-badge" data-category="app">App</button>
+        <button class="cat-badge" data-category="android">Android</button>
+        <button class="cat-badge" data-category="prompt">Prompt</button>
+        <button class="cat-badge" data-category="document">Document</button>
+        <button class="cat-badge" data-category="tool">Tool</button>
+        <button class="cat-badge" data-category="image-enhancing">Visual</button>
       </div>
       
       <!-- Prompt Grid -->
-      <div id="promptGrid" class="grid grid-cols-1 gap-4" style="margin-top: 16px;"></div>
+      <div id="promptGrid" class="grid grid-cols-1 gap-5" style="margin-top: 16px;"></div>
     </div>
 
     <!-- Create Tab Content -->
     <div id="create" class="tab-content">
       <div class="neo-container">
-        <h2>✨ Create Your Own Prompt</h2>
+        <h2>✨ Create & Manage</h2>
+
+        <!-- Data Management (Import/Export) -->
+        <div style="margin: 20px 0; padding: 16px; border-radius: 16px; background: var(--bg-base); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);">
+          <h3 style="font-size: 1rem; margin-bottom: 12px;">💾 Data Backup</h3>
+          <div class="button-group">
+            <button onclick="exportData()" class="neo-btn" style="flex: 1; font-size: 0.8rem;">📥 Export Data</button>
+            <button onclick="document.getElementById('importFile').click()" class="neo-btn" style="flex: 1; font-size: 0.8rem;">📤 Restore Data</button>
+            <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
+          </div>
+        </div>
         
-        <!-- Title Input -->
-        <div style="margin-top: 16px;">
+        <div style="margin-top: 24px;">
           <label class="form-label">Title</label>
           <input type="text" id="customTitle" class="neo-inset" placeholder="Enter prompt title...">
         </div>
 
-        <!-- Prompt Textarea -->
         <div style="margin-top: 12px;">
-          <label class="form-label">Prompt</label>
-          <textarea id="customPrompt" class="neo-inset" placeholder="Enter your custom prompt here..." style="min-height: 120px; resize: vertical;"></textarea>
+          <label class="form-label">Prompt Text</label>
+          <textarea id="customPrompt" class="neo-inset" placeholder="Enter prompt text. Use [brackets] to create fill-in variables!" style="min-height: 120px; resize: vertical;"></textarea>
         </div>
 
-        <!-- Category Select -->
         <div style="margin-top: 12px;">
           <label class="form-label">Category</label>
           <select id="customCategory" class="neo-inset">
@@ -81,28 +99,24 @@
           </select>
         </div>
 
-        <!-- Icon Input -->
         <div style="margin-top: 12px;">
           <label class="form-label">Icon Emoji</label>
-          <input type="text" id="customIcon" class="neo-inset" placeholder="Enter emoji icon..." value="✨" maxlength="2">
+          <input type="text" id="customIcon" class="neo-inset" placeholder="Enter emoji..." value="✨" maxlength="2">
         </div>
 
-        <!-- Action Buttons -->
-        <div class="button-group" style="margin-top: 16px;">
-          <button onclick="addCustomPrompt()" class="neo-btn primary" style="flex: 1;">➕ Add to Vault</button>
+        <div class="button-group" style="margin-top: 20px;">
+          <button onclick="addCustomPrompt()" class="neo-btn primary" style="flex: 2;">➕ Add to Vault</button>
           <button onclick="clearCustomForm()" class="neo-btn" style="flex: 1;">🔄 Clear</button>
         </div>
 
-        <!-- Custom Prompts List -->
-        <div style="margin-top: 24px;">
-          <h3 style="margin: 0 0 12px 0; font-size: 1.1rem;">📌 Your Custom Prompts</h3>
-          <div id="customPromptsList" style="display: flex; flex-direction: column; gap: 12px;"></div>
+        <div style="margin-top: 32px;">
+          <h3 style="margin-bottom: 16px;">📌 Custom Prompts</h3>
+          <div id="customPromptsList" style="display: flex; flex-direction: column; gap: 16px;"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- JavaScript Files -->
   <script src="prompts.js"></script>
   <script src="app.js"></script>
 </body>
