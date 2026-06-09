@@ -23,28 +23,18 @@
   <!-- Main Container -->
   <div class="max-w-2xl mx-auto">
     <!-- Header -->
-    <header class="text-center">
-      <h1>🔮 Lava's Prompt Vault</h1>
-      
-      <!-- Tab Navigation -->
-      <div class="tab-nav">
-        <button class="tab-btn active" data-tab="vault">📚 Vault</button>
-        <button class="tab-btn" data-tab="create">✏️ Create</button>
+    <header class="text-center my-8">
+      <h1 class="text-4xl font-black mb-6 text-white tracking-tight">Lava's Prompt Vault</h1>
+      <div class="flex flex-wrap gap-2 justify-center">
+        <button onclick="copyAll()" class="neo-btn">📋 Copy All</button>
+        <button onclick="window.print()" class="neo-btn">🖨️ Print</button>
       </div>
     </header>
 
     <!-- Vault Tab Content -->
     <div id="vault" class="tab-content active">
-      <!-- Action Buttons -->
-      <div class="button-group" style="margin-bottom: 16px;">
-        <button onclick="copyAll()" class="neo-btn">📋 Copy All</button>
-        <button onclick="exportGoogleDocs()" class="neo-btn">💙 Docs</button>
-        <button onclick="exportSamsungNotes()" class="neo-btn">🧡 Notes</button>
-        <button onclick="window.print()" class="neo-btn">🖨️ Print</button>
-      </div>
-
       <!-- Search Input -->
-      <input type="text" id="searchInput" class="neo-inset" placeholder="🔍 Search prompts..." style="margin-bottom: 12px;">
+      <input type="text" id="searchInput" class="neo-inset" placeholder="🔍 Search prompts..." style="margin-bottom: 12px; width: 100%;">
       
       <!-- Category Filter -->
       <div class="category-filter">
