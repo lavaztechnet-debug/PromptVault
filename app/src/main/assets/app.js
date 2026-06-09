@@ -1,217 +1,202 @@
-/* --- FILE: app.js --- */
-// ===== STATE MANAGEMENT =====
-let allPrompts = [];
-let favoritePrompts = [];
+// Application State
+let currentTheme = localStorage.getItem('theme') || 'light';
+let currentLayout = localStorage.getItem('layout') || 'grid-2';
+let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
 
-// ===== INITIALIZATION =====
-window.addEventListener('load', () => {
-  if (typeof prompts === 'undefined') {
-    console.error("Critical Error: 'prompts' variable is not defined. Ensure prompts.js is loaded.");
-    return;
-  }
-  allPrompts = [...prompts];
-  loadData();
-  initTheme();
+// Initialize App
+document.addEventListener('DOMContentLoaded', () => {
+  applyTheme(currentTheme);
+  applyLayout(currentLayout);
   renderPrompts();
-  setupEventListeners();
-  initNotepad();
+  setupTabs();
+  setupSearch();
+  loadNote();
 });
 
-function loadData() {
-  const savedFavs = localStorage.getItem('lavaFavoritePrompts');
-  if (savedFavs) favoritePrompts = JSON.parse(savedFavs);
-}
-
-function saveData() {
-  localStorage.setItem('lavaFavoritePrompts', JSON.stringify(favoritePrompts));
-}
-
-// ===== NOTEPAD LOGIC =====
-function initNotepad() {
-  const editor = document.getElementById('noteEditor');
-  if (!editor) return;
-  editor.value = localStorage.getItem('lavaQuickNote') || '';
-  
-  // Auto-save on input
-  editor.addEventListener('input', () => {
-    localStorage.setItem('lavaQuickNote', editor.value);
-  });
-}
-
-function saveNoteManually() {
-  const editor = document.getElementById('noteEditor');
-  if (editor) {
-    localStorage.setItem('lavaQuickNote', editor.value);
-    showToast('💾 Note Saved Successfully!');
-  }
-}
-
-// ===== THEME LOGIC =====
-function initTheme() {
-  const isDark = localStorage.getItem('lavaTheme') === 'dark';
-  const btn = document.getElementById('themeToggleBtn');
-  const metaTheme = document.getElementById('themeColorMeta');
-  
-  if (isDark) {
-    document.body.classList.add('dark-theme');
-    if (btn) btn.innerText = '☀️';
-    if (metaTheme) metaTheme.setAttribute('content', '#1e272e');
-  } else {
-    if (metaTheme) metaTheme.setAttribute('content', '#e0e5ec');
-  }
-}
-
+// Theme Management
 function toggleTheme() {
-  const body = document.body;
+  currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+  applyTheme(currentTheme);
+}
+
+function applyTheme(theme) {
+  document.body.className = theme === 'dark' ? 'dark-theme' : '';
   const btn = document.getElementById('themeToggleBtn');
-  const metaTheme = document.getElementById('themeColorMeta');
-  
-  body.classList.toggle('dark-theme');
-  const isDark = body.classList.contains('dark-theme');
-  
-  localStorage.setItem('lavaTheme', isDark ? 'dark' : 'light');
-  if (btn) btn.innerText = isDark ? '☀️' : '🌙';
-  if (metaTheme) metaTheme.setAttribute('content', isDark ? '#1e272e' : '#e0e5ec');
-  
-  showToast(isDark ? '🌙 Dark Mode Active' : '☀️ Light Mode Active');
+  btn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+  const meta = document.getElementById('themeColorMeta');
+  meta.setAttribute('content', theme === 'dark' ? '#1e272e' : '#e0e5ec');
+  localStorage.setItem('theme', theme);
 }
 
-// ===== RENDER & ACTIONS =====
-function setupEventListeners() {
-  // Tabs
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const tab = e.target.closest('.tab-btn').dataset.tab;
-      switchTab(tab);
-    });
-  });
-  
-  // Search
-  const search = document.getElementById('searchInput');
-  if (search) {
-    search.addEventListener('input', (e) => renderPrompts(e.target.value));
-  }
+// Layout Management
+function changeLayout(layout) {
+  currentLayout = layout;
+  applyLayout(layout);
+  localStorage.setItem('layout', layout);
 }
 
-function renderPrompts(filterQuery = '') {
+function applyLayout(layout) {
   const grid = document.getElementById('promptGrid');
-  if (!grid) return;
+  grid.className = `grid gap-6 layout-${layout}`;
   
+  // Update UI indicators
+  document.querySelectorAll('.layout-btn').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.title.toLowerCase().includes(layout.split('-')[0])) {
+      btn.classList.add('active');
+    }
+  });
+}
+
+// Render Prompts with Sequential Numbering
+function renderPrompts(filter = '') {
+  const grid = document.getElementById('promptGrid');
   grid.innerHTML = '';
-  const query = filterQuery.toLowerCase();
-  
-  const filtered = allPrompts.filter(p => 
-    p.title.toLowerCase().includes(query) || 
-    p.prompt.toLowerCase().includes(query) ||
-    (p.category && p.category.toLowerCase().includes(query))
+
+  const filtered = prompts.filter(p => 
+    p.title.toLowerCase().includes(filter.toLowerCase()) ||
+    p.prompt.toLowerCase().includes(filter.toLowerCase()) ||
+    p.category.toLowerCase().includes(filter.toLowerCase())
   );
 
-  if (filtered.length === 0) {
-    grid.innerHTML = `<div class="neo-container text-center py-10 opacity-50 w-full">No prompts found for "${filterQuery}"</div>`;
-    return;
-  }
-
-  filtered.forEach((p) => {
-    const isFav = favoritePrompts.includes(p.id);
+  filtered.forEach((p, index) => {
+    const isFav = favorites.includes(p.id);
     const card = document.createElement('div');
-    card.className = `prompt-card`;
-    
-    // Escape prompt for JS attribute
-    const safePrompt = p.prompt.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-    
+    card.className = 'prompt-card';
     card.innerHTML = `
+      <div class="prompt-number">${index + 1}</div>
       <div class="prompt-card-header">
-        <span class="prompt-icon">${p.icon || '📝'}</span>
-        <div style="flex: 1;">
-          <h3 style="font-size: 1.15rem; margin-bottom: 2px;">${p.title}</h3>
-          ${p.category ? `<span style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.6; font-weight: 800;">${p.category}</span>` : ''}
+        <div class="prompt-icon">${p.icon}</div>
+        <div>
+          <h3 class="text-xl">${p.title}</h3>
+          <p class="text-sm opacity-60 uppercase tracking-wider">${p.category}</p>
         </div>
-        <button onclick="toggleFavorite(${p.id})" class="fav-btn" title="Toggle Favorite">
+        <button onclick="toggleFav(${p.id})" class="fav-btn" title="Add to Favorites">
           ${isFav ? '❤️' : '🤍'}
         </button>
       </div>
-      <p style="font-size: 0.9rem; margin-bottom: 20px; opacity: 0.85; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+      <div class="neo-inset-mini p-4 rounded-xl mb-6 flex-1 text-sm overflow-hidden" style="max-height: 150px; position: relative;">
         ${p.prompt}
-      </p>
-      <div class="button-group">
-        <button onclick="copyToClipboard('${safePrompt}')" class="neo-btn primary w-full">
-          <span>📋</span> Copy Prompt
-        </button>
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 30px; background: linear-gradient(transparent, var(--bg-base));"></div>
       </div>
+      <button onclick="copyPrompt('${p.prompt.replace(/'/g, "\\'")}')" class="neo-btn primary w-full">
+        <span>📋</span> Copy Prompt
+      </button>
     `;
     grid.appendChild(card);
   });
 }
 
-function copyAllPrompts() {
-  if (allPrompts.length === 0) {
-    showToast('❌ No prompts to copy!');
-    return;
-  }
-  
-  const allText = allPrompts.map(p => `--- ${p.title} ---\n${p.prompt}`).join('\n\n');
-  
-  navigator.clipboard.writeText(allText).then(() => {
-    showToast('📋 All Prompts Copied!');
-  }).catch(err => {
-    console.error('Could not copy text: ', err);
-    showToast('❌ Copy Failed');
+// Search Logic
+function setupSearch() {
+  const input = document.getElementById('searchInput');
+  input.addEventListener('input', (e) => {
+    renderPrompts(e.target.value);
   });
 }
 
-function copyToClipboard(text) {
+// Tab Logic
+function setupTabs() {
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+}
+
+// Copy Logic
+function copyPrompt(text) {
   navigator.clipboard.writeText(text).then(() => {
-    showToast('✅ Copied to Clipboard!');
-  }).catch(err => {
-    console.error('Could not copy text: ', err);
-    showToast('❌ Copy Failed');
+    showToast('Prompt Copied!');
   });
 }
 
-function toggleFavorite(id) {
-  const index = favoritePrompts.indexOf(id);
+function copyAllPrompts() {
+  const allText = prompts.map((p, i) => `${i+1}. [${p.title}]\n${p.prompt}`).join('\n\n');
+  navigator.clipboard.writeText(allText).then(() => {
+    showToast('All Prompts Copied!');
+  });
+}
+
+// HTML Export Logic
+function exportToHTML() {
+  const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Prompt Vault Export</title>
+  <style>
+    body { font-family: sans-serif; padding: 40px; line-height: 1.6; background: #f4f7f6; color: #333; }
+    .container { max-width: 800px; margin: auto; }
+    .card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .number { color: #00cec9; font-weight: bold; margin-right: 10px; }
+    .title { font-size: 1.2rem; font-weight: bold; }
+    .category { font-size: 0.8rem; color: #999; text-transform: uppercase; margin-bottom: 10px; }
+    pre { background: #eee; padding: 15px; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Prompt Vault Export - ${new Date().toLocaleDateString()}</h1>
+    ${prompts.map((p, i) => `
+      <div class="card">
+        <div class="category">${p.category}</div>
+        <div class="title"><span class="number">#${i + 1}</span> ${p.icon} ${p.title}</div>
+        <pre>${p.prompt}</pre>
+      </div>
+    `).join('')}
+  </div>
+</body>
+</html>`;
+
+  const blob = new Blob([htmlContent], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `PromptVault_Export_${new Date().toISOString().split('T')[0]}.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('HTML Export Started!');
+}
+
+// Favorites Logic
+function toggleFav(id) {
+  const index = favorites.indexOf(id);
   if (index > -1) {
-    favoritePrompts.splice(index, 1);
-    showToast('💔 Removed from Favorites');
+    favorites.splice(index, 1);
   } else {
-    favoritePrompts.push(id);
-    showToast('❤️ Added to Favorites');
+    favorites.push(id);
   }
-  saveData();
-  const searchInput = document.getElementById('searchInput');
-  renderPrompts(searchInput ? searchInput.value : '');
+  localStorage.setItem('favorites', JSON.stringify(favorites));
+  renderPrompts(document.getElementById('searchInput').value);
 }
 
-function switchTab(tabName) {
-  const tab = document.getElementById(tabName);
-  if (!tab) return;
+// Note Management
+function loadNote() {
+  const saved = localStorage.getItem('prompt_note');
+  if (saved) document.getElementById('noteEditor').value = saved;
   
-  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  
-  tab.classList.add('active');
-  const btn = document.querySelector(`[data-tab="${tabName}"]`);
-  if (btn) btn.classList.add('active');
-  
-  // Smooth scroll to top on tab switch
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('noteEditor').addEventListener('input', (e) => {
+    localStorage.setItem('prompt_note', e.target.value);
+  });
 }
 
+function saveNoteManually() {
+  const content = document.getElementById('noteEditor').value;
+  localStorage.setItem('prompt_note', content);
+  showToast('Note Saved Locally!');
+}
+
+// UI Helpers
 function showToast(msg) {
-  let t = document.getElementById('toast');
-  if (!t) {
-    t = document.createElement('div');
-    t.id = 'toast';
-    document.body.appendChild(t);
-  }
-  
-  t.innerText = msg;
-  t.classList.add('show');
-  
-  // Clear existing timeout if any
-  if (window.toastTimeout) clearTimeout(window.toastTimeout);
-  
-  window.toastTimeout = setTimeout(() => {
-    t.classList.remove('show');
-  }, 2500);
+  const toast = document.getElementById('toast');
+  toast.innerText = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
 }
