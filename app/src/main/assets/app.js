@@ -41,25 +41,25 @@ function renderPrompts(filter = '') {
     const isFav = favorites.includes(p.id);
     const card = document.createElement('div');
     card.className = 'prompt-card';
-    card.innerHTML = `
-      <div class="prompt-number">${index + 1}</div>
+    card.innerHTML = \`
+      <div class="prompt-number">\${index + 1}</div>
       <div class="prompt-card-header">
-        <div class="prompt-icon">${p.icon}</div>
+        <div class="prompt-icon">\${p.icon}</div>
         <div style="flex: 1; min-width: 0;">
-          <h3 class="text-xl truncate">${p.title}</h3>
-          <p class="text-sm opacity-60 uppercase tracking-wider truncate">${p.category}</p>
+          <h3 class="text-xl truncate">\${p.title}</h3>
+          <p class="text-sm opacity-60 uppercase tracking-wider truncate">\${p.category}</p>
         </div>
-        <button onclick="toggleFav(${p.id})" class="fav-btn" title="Add to Favorites">
-          ${isFav ? '❤️' : '🤍'}
+        <button onclick="toggleFav(\${p.id})" class="fav-btn" title="Add to Favorites">
+          \${isFav ? '❤️' : '🤍'}
         </button>
       </div>
       <div class="prompt-content-area">
-        ${p.prompt}
+        \${p.prompt}
       </div>
-      <button onclick="copyPrompt('${p.prompt.replace(/'/g, "\\'")}')" class="neo-btn primary w-full">
+      <button onclick="copyPrompt('\${p.prompt.replace(/'/g, "\\\\'")}')" class="neo-btn primary w-full">
         <span>📋</span> Copy Prompt
       </button>
-    `;
+    \`;
     grid.appendChild(card);
   });
 }
@@ -93,7 +93,7 @@ function copyPrompt(text) {
 }
 
 function copyAllPrompts() {
-  const allText = prompts.map((p, i) => `${i+1}. [${p.title}]\n${p.prompt}`).join('\n\n');
+  const allText = prompts.map((p, i) => \`\${i+1}. [\${p.title}]\\n\${p.prompt}\`).join('\\n\\n');
   navigator.clipboard.writeText(allText).then(() => {
     showToast('All Prompts Copied!');
   });
