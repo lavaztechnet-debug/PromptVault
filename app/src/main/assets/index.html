@@ -12,10 +12,8 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Toast Notification -->
   <div id="toast">Action Successful!</div>
 
-  <!-- Variable Fill-In Modal -->
   <div id="variableModal" class="modal-overlay">
     <div class="neo-container modal-content">
       <h3 style="margin-bottom: 12px; font-size: 1.2rem;">Fill in Variables</h3>
@@ -29,9 +27,20 @@
       </div>
     </div>
   </div>
+
+  <div id="handoffModal" class="modal-overlay">
+    <div class="neo-container modal-content" style="text-align: center;">
+      <div style="font-size: 2.5rem; margin-bottom: 12px;">✅</div>
+      <h3 style="margin-bottom: 8px; font-size: 1.3rem;">Prompt Copied!</h3>
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 24px;">
+        Your prompt is on your clipboard. Tap below to securely open your browser.
+      </p>
+      <a id="handoffLink" href="#" target="_blank" class="neo-btn primary" style="text-decoration: none; justify-content: center; margin-bottom: 12px; width: 100%;">🌍 Open Browser</a>
+      <button onclick="closeHandoffModal()" class="neo-btn" style="width: 100%;">Close</button>
+    </div>
+  </div>
   
   <div class="max-w-2xl mx-auto">
-    <!-- Header with Theme Toggle -->
     <header class="text-center my-8" style="position: relative;">
       <button onclick="toggleTheme()" class="neo-btn" style="position: absolute; right: 0; top: 0; padding: 10px; border-radius: 50%;" aria-label="Toggle Theme" id="themeToggleBtn">🌙</button>
       <h1 class="text-4xl mb-6 tracking-tight">Lava's Prompt Vault</h1>
@@ -42,11 +51,9 @@
       </div>
     </header>
 
-    <!-- Vault Tab Content -->
     <div id="vault" class="tab-content active">
       <input type="text" id="searchInput" class="neo-inset" placeholder="🔍 Search prompts..." style="margin-bottom: 16px; width: 100%;">
       
-      <!-- Category Filter -->
       <div class="category-filter">
         <button class="cat-badge active" data-category="all">All</button>
         <button class="cat-badge" data-category="favorites" style="color: #ff4757;">❤️ Favorites</button>
@@ -58,16 +65,13 @@
         <button class="cat-badge" data-category="image-enhancing">Visual</button>
       </div>
       
-      <!-- Prompt Grid -->
       <div id="promptGrid" class="grid grid-cols-1 gap-5" style="margin-top: 16px;"></div>
     </div>
 
-    <!-- Create Tab Content -->
     <div id="create" class="tab-content">
       <div class="neo-container">
         <h2>✨ Create & Manage</h2>
 
-        <!-- Data Management (Import/Export) -->
         <div style="margin: 20px 0; padding: 16px; border-radius: 16px; background: var(--bg-base); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);">
           <h3 style="font-size: 1rem; margin-bottom: 12px;">💾 Data Backup</h3>
           <div class="button-group">
