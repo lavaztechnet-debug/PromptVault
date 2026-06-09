@@ -194,20 +194,16 @@ function executeFinalAction(text, action) {
     showToast('📋 Copied to clipboard!');
   } 
   else if (action === 'chatgpt') {
-    showToast('Copied & Opening ChatGPT...');
-    // Using window.location.href because Android WebViews block window.open('_blank')
-    window.location.href = 'https://chatgpt.com/?q=' + encodeURIComponent(text);
+    showToast('Opening ChatGPT...');
+    const encodedText = encodeURIComponent(text);
+    // Forces Android to open the default external web browser (e.g., Chrome)
+    window.location.href = `intent://chatgpt.com/?q=${encodedText}#Intent;scheme=https;action=android.intent.action.VIEW;end;`;
   } 
   else if (action === 'gemini') {
-    showToast('Copied & Opening Gemini...');
-    
-    // Default: Opens the Gemini website inside your app
-    window.location.href = 'https://gemini.google.com/?prompt=' + encodeURIComponent(text);
-    
-    // NATIVE APP ALTERNATIVE: 
-    // If you prefer to launch the actual Gemini Android App installed on your phone 
-    // instead of the website, delete the window.location.href line above and use this one instead:
-    // window.location.href = `intent://send?text=${encodeURIComponent(text)}#Intent;action=android.intent.action.SEND;type=text/plain;package=com.google.android.apps.bard;end`;
+    showToast('Opening Gemini...');
+    const encodedText = encodeURIComponent(text);
+    // Forces Android to open the default external web browser (e.g., Chrome)
+    window.location.href = `intent://gemini.google.com/?prompt=${encodedText}#Intent;scheme=https;action=android.intent.action.VIEW;end;`;
   }
 }
 
