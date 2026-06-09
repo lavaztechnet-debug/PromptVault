@@ -1,9 +1,6 @@
-/**
- * Lava's Prompt Vault - Application Logic
- */
+/* --- FILE: app.js --- */
 
 // ===== STATE MANAGEMENT =====
-// Note: 'prompts' is loaded from prompts.js
 let allPrompts = [...prompts];
 let customPrompts = [];
 let currentFilter = 'all';
@@ -48,7 +45,6 @@ function setupEventListeners() {
 function renderPrompts(filterQuery = '') {
   const grid = document.getElementById('promptGrid');
   if (!grid) return;
-  
   grid.innerHTML = '';
   const query = filterQuery.toLowerCase();
 
@@ -81,11 +77,11 @@ function renderCustomPromptsList() {
   }
   
   list.innerHTML = customPrompts.map((p, i) => `
-    <div class="prompt-card cat-${p.category}" style="gap: 8px; padding: 12px;">
+    <div class="prompt-card cat-${p.category}" style="gap: 8px; padding: 12px; margin-bottom:12px;">
       <div class="prompt-card-header" style="gap: 8px;">
         <span class="prompt-icon">${p.icon}</span>
         <h3 style="font-size: 1rem;">${escapeHtml(p.title)}</h3>
-        <button onclick="deleteCustomPrompt(${i})" class="neo-btn" style="padding: 6px 10px; font-size: 0.75rem; min-width: auto;">❌ Delete</button>
+        <button onclick="deleteCustomPrompt(${i})" class="neo-btn" style="padding: 6px 10px; font-size: 0.75rem; min-width: auto;">❌</button>
       </div>
       <p style="font-size: 0.75rem; -webkit-line-clamp: 2;">${escapeHtml(p.prompt)}</p>
       <button onclick="copyPrompt('${escapeForJsString(p.prompt)}')" class="neo-btn" style="width: 100%; margin-top: 8px; font-size: 0.75rem;">📋 Copy Prompt</button>
@@ -93,7 +89,42 @@ function renderCustomPromptsList() {
   `).join('');
 }
 
-// ===== BUTTON ACTIONS =====
+// ===== PROMPT MANAGEMENT =====
+function addCustomPrompt() {
+  const title = document.getElementById('customTitle').value.trim();
+  const prompt = document.getElementById('customPrompt').value.trim();
+  const category = document.getElementById('customCategory').value;
+  const icon = document.getElementById('customIcon').value.trim() || '✨';
+
+  if (!title || !prompt) {
+    showToast('❌ Fill in Title & Prompt');
+    return;
+  }
+
+  const newPrompt = { id: Date.now(), category, icon, title, prompt };
+  
+  customPrompts.push(newPrompt);
+  allPrompts.push(newPrompt);
+  
+  saveCustomPrompts();
+  renderCustomPromptsList();
+  renderPrompts();
+  clearCustomForm();
+  showToast('✅ Saved to vault!');
+}
+
+function deleteCustomPrompt(index) {
+  const promptToDelete = customPrompts[index];
+  customPrompts.splice(index, 1);
+  allPrompts = allPrompts.filter(p => p.id !== promptToDelete.id);
+  
+  saveCustomPrompts();
+  renderCustomPromptsList();
+  renderPrompts();
+  showToast('❌ Deleted');
+}
+
+// ===== UTILITIES =====
 function copyPrompt(text) {
   navigator.clipboard.writeText(text);
   showToast('Prompt Copied!');
@@ -101,41 +132,16 @@ function copyPrompt(text) {
 
 function copyAll() {
   const filtered = allPrompts.filter(p => currentFilter === 'all' || p.category === currentFilter);
-  const text = filtered.map((p, i) => `${i + 1}. ${p.title}\n${p.prompt}`).join('\n\n---\n\n');
-  navigator.clipboard.writeText(text);
-  showToast(`${filtered.length} Prompts Copied!`);
+  navigator.clipboard.writeText(filtered.map((p, i) => `${i + 1}. ${p.title}\n${p.prompt}`).join('\n\n---\n\n'));
+  showToast('All visible prompts copied!');
 }
 
-function exportGoogleDocs() {
-    let htmlContent = `<html><head><meta charset="UTF-8"></head><body><h1>Lava's Prompt Vault</h1>` + allPrompts.map((p, i) => `
-        <div style="margin-bottom: 20px;">
-            <h3>${i + 1}. ${p.title} (${p.category})</h3>
-            <p>${p.prompt}</p>
-        </div>`).join('') + `</body></html>`;
-    
-    triggerDownload(htmlContent, 'Lava_Vault.html', 'text/html');
-    showToast('Exporting to Docs...');
+function clearCustomForm() {
+  document.getElementById('customTitle').value = '';
+  document.getElementById('customPrompt').value = '';
+  document.getElementById('customIcon').value = '✨';
 }
 
-function exportSamsungNotes() {
-    const text = allPrompts.map((p, i) => `# ${i + 1}. ${p.title}\nCategory: ${p.category}\nPrompt: ${p.prompt}\n\n---\n`).join('\n');
-    triggerDownload(text, 'Lava_Vault.txt', 'text/plain');
-    showToast('Exporting to Notes...');
-}
-
-function triggerDownload(content, filename, type) {
-    const blob = new Blob([content], { type: type });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.target = '_blank';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-}
-
-// ===== UTILS =====
 function switchTab(tabName) {
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
