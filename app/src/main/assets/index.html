@@ -7,7 +7,7 @@
   <title>Lava's Prompt Vault</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style (2).css">
 </head>
 <body>
   <div id="toast">Action Successful!</div>
@@ -20,33 +20,27 @@
       <div class="tab-nav">
         <button class="tab-btn active" data-tab="vault">📚 Vault</button>
         <button class="tab-btn" data-tab="notepad">📝 Notes</button>
-        <button class="tab-btn" data-tab="create">✏️ Add</button>
       </div>
     </header>
 
     <div id="vault" class="tab-content active">
-      <input type="text" id="searchInput" class="neo-inset" placeholder="🔍 Search prompts..." style="margin-bottom: 16px; width: 100%;">
+      <div class="flex gap-2 mb-4">
+        <input type="text" id="searchInput" class="neo-inset" placeholder="🔍 Search prompts..." style="flex: 1;">
+        <button onclick="copyAllPrompts()" class="neo-btn">📋 Copy All</button>
+      </div>
       <div id="promptGrid" class="grid grid-cols-1 gap-5"></div>
     </div>
 
     <div id="notepad" class="tab-content">
       <div class="neo-container">
         <h2 class="mb-4">📝 Quick Note</h2>
-        <textarea id="noteEditor" class="neo-inset" placeholder="Write your thoughts here... saved automatically." style="min-height: 300px;"></textarea>
-      </div>
-    </div>
-
-    <div id="create" class="tab-content">
-      <div class="neo-container">
-        <h2>✨ Add Prompt</h2>
-        <input type="text" id="customTitle" class="neo-inset" placeholder="Title" style="margin-top:20px;">
-        <textarea id="customPrompt" class="neo-inset" placeholder="Prompt text..." style="min-height: 100px; margin-top:12px;"></textarea>
-        <button onclick="addCustomPrompt()" class="neo-btn primary w-full mt-4">➕ Add to Vault</button>
+        <textarea id="noteEditor" class="neo-inset" placeholder="Write your thoughts here..." style="min-height: 300px;"></textarea>
+        <button onclick="saveNoteManually()" class="neo-btn primary w-full mt-4">💾 Save Note</button>
       </div>
     </div>
   </div>
 
-  <script src="prompts.js"></script>
-  <script src="app.js"></script>
+  <script src="prompts (2).js"></script>
+  <script src="app (3).js"></script>
 </body>
 </html>
