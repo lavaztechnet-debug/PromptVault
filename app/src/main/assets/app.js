@@ -48,8 +48,10 @@ function initTheme() {
   const isDark = localStorage.getItem('lavaTheme') === 'dark';
   if (isDark) {
     document.body.classList.add('dark-theme');
-    document.getElementById('themeToggleBtn').innerText = '☀️';
-    document.getElementById('themeColorMeta').setAttribute('content', '#1e272e');
+    const themeBtn = document.getElementById('themeToggleBtn');
+    if (themeBtn) themeBtn.innerText = '☀️';
+    const meta = document.getElementById('themeColorMeta');
+    if (meta) meta.setAttribute('content', '#1e272e');
   }
 }
 
@@ -120,7 +122,7 @@ function toggleFavorite(id) {
   if (favoritePrompts.includes(id)) favoritePrompts = favoritePrompts.filter(f => f !== id);
   else favoritePrompts.push(id);
   saveData();
-  renderPrompts(document.getElementById('searchInput').value);
+  renderPrompts(document.getElementById('searchInput') ? document.getElementById('searchInput').value : '');
 }
 
 // ===== CUSTOM PROMPTS =====
@@ -187,6 +189,7 @@ function filterByCategory(cat) {
 
 function showToast(msg) {
   const t = document.getElementById('toast');
+  if (!t) return;
   t.innerText = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2000);
