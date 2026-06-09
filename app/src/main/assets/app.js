@@ -4,8 +4,8 @@
  */
 
 // ===== STATE MANAGEMENT =====
+// Note: 'prompts' is defined in prompts.js
 let allPrompts = [...prompts];
-let displayNumber = prompts.length;
 let currentFilter = 'all';
 let customPrompts = [];
 
@@ -111,6 +111,7 @@ function renderCustomPromptsList() {
         <button onclick="deleteCustomPrompt(${i})" class="neo-btn" style="padding: 6px 10px; font-size: 0.75rem; min-width: auto;">❌ Delete</button>
       </div>
       <p style="font-size: 0.75rem; -webkit-line-clamp: 2;">${escapeHtml(p.prompt)}</p>
+      <button onclick="copyPrompt('${escapeForJsString(p.prompt)}')" class="neo-btn" style="width: 100%; margin-top: 8px; font-size: 0.75rem;">📋 Copy Prompt</button>
     </div>
   `).join('');
 }
@@ -144,7 +145,9 @@ function copyAll() {
 function launchGeminiApp() {
   const text = document.getElementById('customPrompt')?.value || '';
   if (!text) return showToast('No prompt to send');
-  window.location.href = `intent://send?text=${encodeURIComponent(text)}#Intent;action=android.intent.action.SEND;type=text/plain;package=com.google.android.apps.bard;end`;
+  
+  const encodedText = encodeURIComponent(text);
+  window.location.href = `intent://send?text=${encodedText}#Intent;action=android.intent.action.SEND;type=text/plain;package=com.google.android.apps.bard;end`;
 }
 
 // ===== CUSTOM PROMPT MANAGEMENT =====
@@ -160,7 +163,6 @@ function addCustomPrompt() {
   const customPrompt = { id: Date.now(), category, icon, title, prompt };
   customPrompts.push(customPrompt);
   allPrompts.push(customPrompt);
-  displayNumber++;
 
   renderCustomPromptsList();
   clearCustomForm();
@@ -206,7 +208,7 @@ function showToast(message) {
 // ===== EXPORT FUNCTIONS =====
 
 function exportGoogleDocs() {
-    let htmlContent = `<html><body><h1>Lava's Prompt Vault</h1>` + allPrompts.map((p, i) => `
+    let htmlContent = `<html><head><meta charset="UTF-8"></head><body><h1>Lava's Prompt Vault</h1>` + allPrompts.map((p, i) => `
         <div style="margin-bottom: 20px;">
             <h3>${i + 1}. ${p.title} (${p.category})</h3>
             <p>${p.prompt}</p>
