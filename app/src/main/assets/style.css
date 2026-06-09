@@ -57,12 +57,6 @@ p { color: var(--text-muted); }
   box-shadow: inset 2px 2px 5px var(--depth-shadow-dark), inset -2px -2px 5px var(--depth-shadow-light);
 }
 
-.max-w-6xl { 
-  max-width: 72rem; 
-  margin-left: auto; 
-  margin-right: auto; 
-}
-
 .max-w-2xl { 
   max-width: 42rem; 
   margin-left: auto; 
@@ -122,17 +116,6 @@ p { color: var(--text-muted); }
   box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
 }
 
-/* Layout Specific Grids */
-.layout-list { grid-template-columns: 1fr !important; }
-.layout-grid-2 { grid-template-columns: repeat(1, 1fr); }
-@media (min-width: 768px) {
-  .layout-grid-2 { grid-template-columns: repeat(2, 1fr); }
-  .layout-grid-4 { grid-template-columns: repeat(2, 1fr); }
-}
-@media (min-width: 1024px) {
-  .layout-grid-4 { grid-template-columns: repeat(4, 1fr); }
-}
-
 /* Inputs with Deep Inset */
 .neo-inset {
   width: 100%; 
@@ -189,18 +172,6 @@ p { color: var(--text-muted); }
 .neo-btn.primary { 
   color: var(--accent-color); 
   border: 1px solid rgba(0, 206, 201, 0.2);
-}
-
-.layout-btn {
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1.2rem;
-}
-
-.layout-btn.active {
-  background: var(--bg-base);
-  box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
-  color: var(--accent-color);
 }
 
 /* Fav Button Special Style */

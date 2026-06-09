@@ -1,12 +1,10 @@
 // Application State
 let currentTheme = localStorage.getItem('theme') || 'light';
-let currentLayout = localStorage.getItem('layout') || 'grid-2';
 let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
 
 // Initialize App
 document.addEventListener('DOMContentLoaded', () => {
   applyTheme(currentTheme);
-  applyLayout(currentLayout);
   renderPrompts();
   setupTabs();
   setupSearch();
@@ -26,26 +24,6 @@ function applyTheme(theme) {
   const meta = document.getElementById('themeColorMeta');
   meta.setAttribute('content', theme === 'dark' ? '#1e272e' : '#e0e5ec');
   localStorage.setItem('theme', theme);
-}
-
-// Layout Management
-function changeLayout(layout) {
-  currentLayout = layout;
-  applyLayout(layout);
-  localStorage.setItem('layout', layout);
-}
-
-function applyLayout(layout) {
-  const grid = document.getElementById('promptGrid');
-  grid.className = `grid gap-6 layout-${layout}`;
-  
-  // Update UI indicators
-  document.querySelectorAll('.layout-btn').forEach(btn => {
-    btn.classList.remove('active');
-    if (btn.title.toLowerCase().includes(layout.split('-')[0])) {
-      btn.classList.add('active');
-    }
-  });
 }
 
 // Render Prompts with Sequential Numbering
